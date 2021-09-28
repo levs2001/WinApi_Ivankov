@@ -5,7 +5,8 @@
 
 typedef enum {
     FILE_NOT_OPEN,
-    NULL_BUFF_POINTER
+    NULL_BUFF_POINTER,
+    NULL_VIEWER_POINTER
 } eException;
 
 void Exception(eException exceptionType);

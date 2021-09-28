@@ -18,10 +18,10 @@
 	"file_reader.h"
 	"exceptions.h"
 
-1632860525 source:d:\myprogramms\codeblocks\winapi_ivankov\exceptions.cpp
+1632865550 source:d:\myprogramms\codeblocks\winapi_ivankov\exceptions.cpp
 	"exceptions.h"
 
-1632860574 d:\myprogramms\codeblocks\winapi_ivankov\exceptions.h
+1632865484 d:\myprogramms\codeblocks\winapi_ivankov\exceptions.h
 	<stdio.h>
 
 1632862509 source:d:\myprogramms\codeblocks\winapi_ivankov\file_reader.cpp
@@ -29,19 +29,21 @@
 	"exceptions.h"
 	<stdlib.h>
 
-1632861164 d:\myprogramms\codeblocks\winapi_ivankov\file_reader.h
+1632865834 d:\myprogramms\codeblocks\winapi_ivankov\file_reader.h
 	<stdio.h>
 
-1632862316 source:d:\myprogramms\codeblocks\winapi_ivankov\main.cpp
+1632865743 source:d:\myprogramms\codeblocks\winapi_ivankov\main.cpp
 	<tchar.h>
 	<windows.h>
 	"file_reader.h"
 	"viewer_comps.h"
 
-1632861609 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.cpp
-	"viewer_comps.h"
+1632865736 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.cpp
 	<stdlib.h>
+	"viewer_comps.h"
+	"file_reader.h"
+	"exceptions.h"
 
-1632861657 d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
+1632865741 d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
 	<stddef.h>
 

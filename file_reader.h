@@ -3,7 +3,6 @@
 
 #include<stdio.h>
 
-#define FILE_DEFAULT_READING_PORTION 20
 #define TEST_FILENAME "test_for_lab.txt"
 
 FILE* OpenFile(char* filename);

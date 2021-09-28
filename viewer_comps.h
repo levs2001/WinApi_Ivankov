@@ -8,5 +8,6 @@ typedef struct {
 }viewer_t;
 
 viewer_t* InitViewer();
+void ClearViewer(viewer_t* viewerPointer);
 
 #endif

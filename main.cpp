@@ -9,6 +9,7 @@
 #include "file_reader.h"
 #include "viewer_comps.h"
 
+
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
@@ -79,15 +80,35 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 }
 
 
+//HDC hdc = GetDc(hwnd);
+//
+//        LPRECT windRect;
+//        GetClientRect(hwnd, windRect);
+//        TCHAR text[ ] = "Defenestration can be hazardous";
+//        TextOut(hdc,windRect.left,windRect.top, text, sizeof(text));
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    HDC hdc;
+    PAINTSTRUCT paintStruct;
+    RECT windRect;
+
     switch (message) {                /* handle the messages */
     case WM_DESTROY:
+        ClearViewer(viewerPointer_g);
         PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
         break;
     case WM_CREATE:
 
         break;
+    case WM_PAINT: {
+        hdc = BeginPaint(hwnd, &paintStruct);
+        GetClientRect(hwnd, &windRect);
+        //Test example for text printing in window
+        TextOut(hdc, windRect.left, windRect.top, viewerPointer_g->buffer, viewerPointer_g->bufferSize);
+        EndPaint(hwnd, &paintStruct);
+        break;
+    }
+
     default:                      /* for messages that we don't deal with */
         return DefWindowProc (hwnd, message, wParam, lParam);
     }

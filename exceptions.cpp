@@ -7,5 +7,9 @@ void Exception(eException exceptionType) {
         break;
     case NULL_BUFF_POINTER:
         printf("Error: NULL pointer during buffer clearing.");
+        break;
+    case NULL_VIEWER_POINTER:
+        printf("Error: NULL pointer during viewer clearing.");
+        break;
     }
 }
