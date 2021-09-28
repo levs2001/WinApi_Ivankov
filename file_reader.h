@@ -7,9 +7,11 @@
 #define TEST_FILENAME "test_for_lab.txt"
 
 FILE* OpenFile(char* filename);
-void GetPortionFromFile(char* portionContainer, size_t portionSize, FILE* filePointer);
+//void GetPortionFromFile(char* portionContainer, size_t portionSize, FILE* filePointer);
 void CloseFile(FILE* filePointer);
-
+char* GetBufferFromFile(char* filename, size_t* bufferSizePointer);
+size_t GetSizeFile(FILE* filePointer);
+void ClearBuffer(char* buffer);
 
 #endif
 

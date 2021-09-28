@@ -42,6 +42,8 @@
 		<Unit filename="file_reader.cpp" />
 		<Unit filename="file_reader.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="viewer_comps.cpp" />
+		<Unit filename="viewer_comps.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

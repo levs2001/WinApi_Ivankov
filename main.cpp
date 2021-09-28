@@ -7,10 +7,12 @@
 #include <tchar.h>
 #include <windows.h>
 #include "file_reader.h"
+#include "viewer_comps.h"
 
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
+viewer_t* viewerPointer_g;
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -60,7 +62,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     /* Make the window visible on the screen */
     ShowWindow (hwnd, nCmdShow);
 
-    // Здесь открываем файл
+    // Here I want to init my system
+    viewerPointer_g = InitViewer();
+    viewerPointer_g->buffer = GetBufferFromFile(TEST_FILENAME, &(viewerPointer_g->bufferSize));
 
     /* Run the message loop. It will run until GetMessage() returns 0 */
     while (GetMessage (&messages, NULL, 0, 0)) {
