@@ -96,7 +96,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         hdc = BeginPaint(hwnd, &paintStruct);
         GetClientRect(hwnd, &windRect);
         //Test example for text printing in window
-        TextOut(hdc, windRect.left, windRect.top, viewerPointer_g->buffer, viewerPointer_g->bufferSize);
+        ShowViewer(viewerPointer_g, hdc, windRect);
         EndPaint(hwnd, &paintStruct);
         break;
     }
