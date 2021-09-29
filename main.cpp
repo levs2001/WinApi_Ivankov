@@ -65,8 +65,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     // Here I want to init my system
     viewerPointer_g = InitViewer();
-    viewerPointer_g->buffer = GetBufferFromFile(TEST_FILENAME, &(viewerPointer_g->bufferSize));
-
+    SendFileInViewer(viewerPointer_g, TEST_FILENAME);
     /* Run the message loop. It will run until GetMessage() returns 0 */
     while (GetMessage (&messages, NULL, 0, 0)) {
         /* Translate virtual-key messages into character messages */
@@ -79,13 +78,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     return messages.wParam;
 }
 
-
-//HDC hdc = GetDc(hwnd);
-//
-//        LPRECT windRect;
-//        GetClientRect(hwnd, windRect);
-//        TCHAR text[ ] = "Defenestration can be hazardous";
-//        TextOut(hdc,windRect.left,windRect.top, text, sizeof(text));
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC hdc;
