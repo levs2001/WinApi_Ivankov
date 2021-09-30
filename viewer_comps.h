@@ -10,6 +10,6 @@ typedef struct {
 viewer_t* InitViewer();
 void ClearViewer(viewer_t* viewerPointer);
 void SendFileInViewer(viewer_t* viewerPointer, char* filename);
-void ShowViewer(viewer_t* viewerPointer, HDC hdc, RECT windRect);
+void ShowViewer(viewer_t* viewerPointer, HDC hdc, LPRECT windRect);
 
 #endif

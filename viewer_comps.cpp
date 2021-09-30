@@ -13,10 +13,17 @@ void SendFileInViewer(viewer_t* viewerPointer, char* filename) {
     viewerPointer->buffer = GetBufferFromFile(filename, &(viewerPointer->bufferSize));
 }
 
-void ShowViewer(viewer_t* viewerPointer, HDC hdc, RECT windRect) {
+void PrintTextInViewer(viewer_t* viewerPointer, HDC hdc, LPRECT windRectP) {
+    //Here I will print text with TextOut
+    //Make line break if we see line break in buffer and if meet the end of rect
+    //    GetTextEx
+}
+
+void ShowViewer(viewer_t* viewerPointer, HDC hdc, LPRECT windRectP) {
     // Make parsing to next string
     // Make scrolling
-    TextOut(hdc, windRect.left, windRect.top, viewerPointer->buffer, viewerPointer->bufferSize);
+    //    ExtTextOut(hdc, windRectP->left, windRectP->top, ETO_CLIPPED, windRectP, viewerPointer->buffer, viewerPointer->bufferSize, NULL);
+    //    DrawText(hdc, viewerPointer->buffer, viewerPointer->bufferSize, windRectP, DT_EDITCONTROL | DT_PATH_ELLIPSIS);
 }
 
 void ClearViewer(viewer_t* viewerPointer) {
