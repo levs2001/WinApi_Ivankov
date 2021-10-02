@@ -13,7 +13,6 @@
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
-viewer_t* viewerPointer_g;
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -27,7 +26,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.hInstance = hThisInstance;
     wincl.lpszClassName = szClassName;
     wincl.lpfnWndProc = WindowProcedure;      /* This function is called by windows */
-    wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
+    wincl.style = CS_OWNDC;                 /* Catch double-clicks */
     wincl.cbSize = sizeof (WNDCLASSEX);
 
     /* Use default icon and mouse-pointer */
@@ -63,9 +62,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     /* Make the window visible on the screen */
     ShowWindow (hwnd, nCmdShow);
 
-    // Here I want to init my system
-    viewerPointer_g = InitViewer();
-    SendFileInViewer(viewerPointer_g, TEST_FILENAME);
     /* Run the message loop. It will run until GetMessage() returns 0 */
     while (GetMessage (&messages, NULL, 0, 0)) {
         /* Translate virtual-key messages into character messages */
@@ -83,27 +79,34 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     HDC hdc;
     PAINTSTRUCT paintStruct;
     RECT windRect;
+    static viewer_t viewerStatic;
 
     switch (message) {                /* handle the messages */
-    case WM_DESTROY:
-        ClearViewer(viewerPointer_g);
-        PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
-        break;
-    case WM_CREATE:
+    case WM_CREATE: {
+        InitViewer(&viewerStatic, hwnd);
+        SendFileInViewer(&viewerStatic, TEST_FILENAME);
 
-        break;
+    }
+    break;
     case WM_PAINT: {
         hdc = BeginPaint(hwnd, &paintStruct);
         GetClientRect(hwnd, &windRect);
-        //Test example for text printing in window
-        ShowViewer(viewerPointer_g, hdc, &windRect);
+        ShowViewer(&viewerStatic, &windRect);
+
         EndPaint(hwnd, &paintStruct);
-        break;
     }
+    break;
+    case WM_DESTROY: {
+        ClearViewer(&viewerStatic);
+        PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+    }
+    break;
+
 
     default:                      /* for messages that we don't deal with */
         return DefWindowProc (hwnd, message, wParam, lParam);
     }
+
 
     return 0;
 }

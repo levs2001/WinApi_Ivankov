@@ -13,16 +13,19 @@ FILE* OpenFile(char* filename) {
     return filePointer;
 }
 
-//void GetPortionFromFile(char* portionContainer, size_t portionSize, FILE* filePointer) {
-//    fgets(portionContainer, portionSize, filePointer);
-//}
+size_t GetSizeFile(FILE* filePointer) {
+    rewind(filePointer);
+    fseek(filePointer, 0L, SEEK_END);
+    size_t fSize= ftell(filePointer);
+    rewind(filePointer);
+    return fSize;
+}
 
 void CloseFile(FILE* filePointer) {
     fclose(filePointer);
 }
 
-//bufferSizeReturned - size of maked buffer, it depends on file size
-char* GetBufferFromFile(char* filename, size_t* bufferSizePointer) {
+void WriteFileInReader(reader_t* readerP, char* filename) {
     FILE* filePointer = OpenFile(filename);
     size_t bufferSize = GetSizeFile(filePointer);
     char* buffer = (char*)malloc(bufferSize * sizeof(char));
@@ -30,16 +33,16 @@ char* GetBufferFromFile(char* filename, size_t* bufferSizePointer) {
     fread(buffer, sizeof(char), bufferSize, filePointer);
     CloseFile(filePointer);
 
-    *bufferSizePointer = bufferSize;
-    return buffer;
+    readerP->bufferSize = bufferSize;
+    readerP->buffer = buffer;
 }
 
-size_t GetSizeFile(FILE* filePointer) {
-    rewind(filePointer);
-    fseek(filePointer, 0L, SEEK_END);
-    size_t fSize= ftell(filePointer);
-    rewind(filePointer);
-    return fSize;
+void ClearReader(reader_t* readerP) {
+    if(readerP==NULL)
+        Exception(NULL_READER_POINTER);
+
+    ClearBuffer(readerP->buffer);
+    free(readerP);
 }
 
 void ClearBuffer(char* buffer) {

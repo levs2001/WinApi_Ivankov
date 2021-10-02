@@ -2,8 +2,12 @@
 #define HEADER_TEXT_COMPS
 
 typedef struct {
+    size_t height;
+    size_t width;
+    HFONT hFont;
+}myFont_t;
 
-}font_t;
+myFont_t* CreateDefaultFont();
+//HFONT CreateDefaultLogicalFont();
 
-void SetDefaultFont();
 #endif

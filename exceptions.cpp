@@ -11,5 +11,8 @@ void Exception(eException exceptionType) {
     case NULL_VIEWER_POINTER:
         printf("Error: NULL pointer during viewer clearing.");
         break;
+    case NULL_READER_POINTER:
+        printf("Error: NULL reader_t pointer.");
+        break;
     }
 }

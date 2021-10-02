@@ -5,12 +5,19 @@
 
 #define TEST_FILENAME "test_for_lab.txt"
 
+typedef struct {
+    char* buffer;
+    size_t bufferSize;
+}reader_t;
+
+
 FILE* OpenFile(char* filename);
-//void GetPortionFromFile(char* portionContainer, size_t portionSize, FILE* filePointer);
 void CloseFile(FILE* filePointer);
-char* GetBufferFromFile(char* filename, size_t* bufferSizePointer);
 size_t GetSizeFile(FILE* filePointer);
+void WriteFileInReader(reader_t* readerP, char* filename);
 void ClearBuffer(char* buffer);
+void ClearReader(reader_t* readerP);
+void WriteFileInReader(reader_t* readerP, char* filename);
 
 #endif
 

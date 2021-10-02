@@ -1,20 +1,20 @@
 # depslib dependency file v1.0
-1632933484 source:c:\my\myprogramms\codeblocks\winapi_ivankov\main.cpp
+1633176621 source:c:\my\myprogramms\codeblocks\winapi_ivankov\main.cpp
 	<tchar.h>
 	<windows.h>
 	"file_reader.h"
 	"viewer_comps.h"
 
-1632927288 source:c:\my\myprogramms\codeblocks\winapi_ivankov\exceptions.cpp
+1633166848 source:c:\my\myprogramms\codeblocks\winapi_ivankov\exceptions.cpp
 	"exceptions.h"
 
-1632927288 c:\my\myprogramms\codeblocks\winapi_ivankov\exceptions.h
+1633166496 c:\my\myprogramms\codeblocks\winapi_ivankov\exceptions.h
 	<stdio.h>
 
-1632927288 c:\my\myprogramms\codeblocks\winapi_ivankov\file_reader.h
+1633167719 c:\my\myprogramms\codeblocks\winapi_ivankov\file_reader.h
 	<stdio.h>
 
-1632927288 source:c:\my\myprogramms\codeblocks\winapi_ivankov\file_reader.cpp
+1633167719 source:c:\my\myprogramms\codeblocks\winapi_ivankov\file_reader.cpp
 	"file_reader.h"
 	"exceptions.h"
 	<stdlib.h>
@@ -49,13 +49,22 @@
 1633036079 d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
 	<stddef.h>
 
-1632933484 c:\my\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
+1633178324 c:\my\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
 	<stddef.h>
+	"file_reader.h"
+	"text_comps.h"
 
-1632933506 source:c:\my\myprogramms\codeblocks\winapi_ivankov\viewer_comps.cpp
+1633176791 source:c:\my\myprogramms\codeblocks\winapi_ivankov\viewer_comps.cpp
 	<stdlib.h>
 	<windows.h>
 	"viewer_comps.h"
 	"file_reader.h"
 	"exceptions.h"
+	"text_comps.h"
+
+1633174574 source:c:\my\myprogramms\codeblocks\winapi_ivankov\text_comps.cpp
+	<windows.h>
+	"text_comps.h"
+
+1633174299 c:\my\myprogramms\codeblocks\winapi_ivankov\text_comps.h
 
