@@ -89,3 +89,38 @@
 	"exceptions.h"
 	<stdlib.h>
 
+1633963330 source:d:\myprogramms\codeblocks\winapi_ivankov\exceptions.c
+	"exceptions.h"
+
+1633979117 source:d:\myprogramms\codeblocks\winapi_ivankov\file_reader.c
+	"file_reader.h"
+	"exceptions.h"
+	"memory.h"
+	<stdlib.h>
+
+1633979699 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
+	<tchar.h>
+	<windows.h>
+	"file_reader.h"
+	"viewer_comps.h"
+
+1633963987 source:d:\myprogramms\codeblocks\winapi_ivankov\memory.c
+	"memory.h"
+	"exceptions.h"
+	<stdlib.h>
+
+1633969265 source:d:\myprogramms\codeblocks\winapi_ivankov\text_comps.c
+	<windows.h>
+	"exceptions.h"
+	"text_comps.h"
+	"memory.h"
+
+1633980404 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.c
+	<stdlib.h>
+	<windows.h>
+	"viewer_comps.h"
+	"file_reader.h"
+	"exceptions.h"
+	"text_comps.h"
+	"memory.h"
+

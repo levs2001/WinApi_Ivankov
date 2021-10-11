@@ -12,7 +12,7 @@ typedef struct {
 }reader_t;
 
 
-FILE* OpenFile(char* filename);
+FILE* OpenFileMy(char* filename);
 void CloseFile(FILE* filePointer);
 size_t GetSizeFile(FILE* filePointer);
 void WriteFileInReader(reader_t* readerP, char* filename);

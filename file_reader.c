@@ -3,7 +3,7 @@
 #include "memory.h"
 #include <stdlib.h>
 
-FILE* OpenFile(char* filename) {
+FILE* OpenFileMy(char* filename) {
     FILE* filePointer = fopen(filename, "r");
 
     if(filePointer == NULL) {
@@ -27,7 +27,7 @@ void CloseFile(FILE* filePointer) {
 }
 
 void WriteFileInReader(reader_t* readerP, char* filename) {
-    FILE* filePointer = OpenFile(filename);
+    FILE* filePointer = OpenFileMy(filename);
     size_t bufferSize = GetSizeFile(filePointer);
     char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
 
