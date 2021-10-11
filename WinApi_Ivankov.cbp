@@ -42,6 +42,8 @@
 		<Unit filename="file_reader.cpp" />
 		<Unit filename="file_reader.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="memory.cpp" />
+		<Unit filename="memory.h" />
 		<Unit filename="text_comps.cpp" />
 		<Unit filename="text_comps.h" />
 		<Unit filename="viewer_comps.cpp" />

@@ -1,5 +1,6 @@
 #include "file_reader.h"
 #include "exceptions.h"
+#include "memory.h"
 #include <stdlib.h>
 
 FILE* OpenFile(char* filename) {
@@ -28,9 +29,11 @@ void CloseFile(FILE* filePointer) {
 void WriteFileInReader(reader_t* readerP, char* filename) {
     FILE* filePointer = OpenFile(filename);
     size_t bufferSize = GetSizeFile(filePointer);
-    char* buffer = (char*)malloc(bufferSize * sizeof(char));
+    char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
 
     fread(buffer, sizeof(char), bufferSize, filePointer);
+    // TODO: go through buffer and get \n array and size of it
+    // Expand array on REALLOC_SIZE
     CloseFile(filePointer);
 
     readerP->bufferSize = bufferSize;
@@ -42,12 +45,13 @@ void ClearReader(reader_t* readerP) {
         Exception(NULL_READER_POINTER);
 
     ClearBuffer(readerP->buffer);
-    free(readerP);
+    // TODO: Free array of \n here
+    freeMem(readerP, "reader");
 }
 
 void ClearBuffer(char* buffer) {
     if(buffer!=NULL)
-        free(buffer);
+        freeMem(buffer, "buffer");
     else
         Exception(NULL_BUFF_POINTER);
 }

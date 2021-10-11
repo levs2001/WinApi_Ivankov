@@ -48,7 +48,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                0,                   /* Extended possibilites for variation */
                szClassName,         /* Classname */
                _T("Code::Blocks Template Windows App"),       /* Title Text */
-               WS_OVERLAPPEDWINDOW, /* default window */
+               WS_OVERLAPPEDWINDOW | WS_VSCROLL, /* default window */
                CW_USEDEFAULT,       /* Windows decides the position */
                CW_USEDEFAULT,       /* where the window ends up on the screen */
                544,                 /* The programs width */
@@ -88,10 +88,40 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
     }
     break;
+    case WM_SIZE: {
+        ResizeViewer(&viewerStatic, hwnd);
+        InvalidateRect(hwnd, NULL, TRUE);
+    }
+    break;
+    case WM_VSCROLL :
+        switch(LOWORD(wParam)) {
+        //TODO: Refactor this!!!
+        //Think about one function for vScrolling
+        case SB_LINEUP :
+            viewerStatic.winParamsP->vScrollPos -= 1;
+            break;
+        case SB_LINEDOWN :
+            viewerStatic.winParamsP->vScrollPos += 1;
+            break;
+        case SB_PAGEUP :
+            viewerStatic.winParamsP->vScrollPos -= (viewerStatic.winParamsP->height) / viewerStatic.fontP->height;
+            break;
+        case SB_PAGEDOWN :
+            viewerStatic.winParamsP->vScrollPos += (viewerStatic.winParamsP->height) / viewerStatic.fontP->height;
+            break;
+        case SB_THUMBPOSITION :
+            viewerStatic.winParamsP->vScrollPos = HIWORD(wParam);
+            break;
+        }
+        if (viewerStatic.winParamsP->vScrollPos  != GetScrollPos(hwnd, SB_VERT)) {
+            SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
+            InvalidateRect(hwnd, NULL, TRUE);
+        }
+        break;
     case WM_PAINT: {
         hdc = BeginPaint(hwnd, &paintStruct);
         GetClientRect(hwnd, &windRect);
-        ShowViewer(&viewerStatic, &windRect);
+        ShowViewer(&viewerStatic);
 
         EndPaint(hwnd, &paintStruct);
     }

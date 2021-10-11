@@ -5,21 +5,25 @@
 #include"text_comps.h"
 
 typedef struct {
-    LPRECT coord;
+    size_t width;
+    size_t height;
     size_t widthInSyms;
+    size_t heightInSyms;
+    size_t vScrollPos;
+    size_t hScrollPos;
     HDC hdc;
 }winParams_t;
 
 typedef struct {
     reader_t* readerP;
     myFont_t* fontP;
-    //Add windowParamms structure here, RECT and widthInSyms
     winParams_t* winParamsP;
 }viewer_t;
 
 void InitViewer(viewer_t* viewerP, HWND hwnd);
 void ClearViewer(viewer_t* viewerP);
 void SendFileInViewer(viewer_t* viewerP, char* filename);
-void ShowViewer(viewer_t* viewerP, LPRECT windRect);
+void ShowViewer(viewer_t* viewerP);
+void ResizeViewer(viewer_t* viewerP, HWND hwnd);
 
 #endif

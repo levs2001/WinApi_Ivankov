@@ -4,10 +4,9 @@
 typedef struct {
     size_t height;
     size_t width;
-    HFONT hFont;
 }myFont_t;
 
 myFont_t* CreateDefaultFont();
-//HFONT CreateDefaultLogicalFont();
-
+void ClearFont(myFont_t* myFontP);
+void SelectFont(HDC hdc, myFont_t* myFont);
 #endif
