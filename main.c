@@ -95,21 +95,19 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     break;
     case WM_VSCROLL :
         switch(LOWORD(wParam)) {
-        //TODO: Refactor this!!!
-        //Think about one function for vScrolling
-        case SB_LINEUP :
-            viewerStatic.winParamsP->vScrollPos -= 1;
+        case SB_LINEUP:
+            ScrollLineUpViewer(&viewerStatic);
             break;
-        case SB_LINEDOWN :
-            viewerStatic.winParamsP->vScrollPos += 1;
+        case SB_LINEDOWN:
+            ScrollLineDownViewer(&viewerStatic);
             break;
-        case SB_PAGEUP :
-            viewerStatic.winParamsP->vScrollPos -= (viewerStatic.winParamsP->height) / viewerStatic.fontP->height;
+        case SB_PAGEUP:
+            ScrollPageUpViewer(&viewerStatic);//-= (viewerStatic.winParamsP->height) / viewerStatic.fontP->height;
             break;
-        case SB_PAGEDOWN :
-            viewerStatic.winParamsP->vScrollPos += (viewerStatic.winParamsP->height) / viewerStatic.fontP->height;
+        case SB_PAGEDOWN:
+            ScrollPageDownViewer(&viewerStatic);
             break;
-        case SB_THUMBPOSITION :
+        case SB_THUMBPOSITION:
             viewerStatic.winParamsP->vScrollPos = HIWORD(wParam);
             break;
         }

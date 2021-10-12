@@ -6,6 +6,7 @@
 #include"text_comps.h"
 #include"memory.h"
 
+#define WINDOW_MIN_X 0
 //TODO: Divide window functions
 void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP) {
     winParamsP->widthInSyms = (winParamsP->width) / myFontP->width;
@@ -56,22 +57,44 @@ void SendFileInViewer(viewer_t* viewerP, char* filename) {
     WriteFileInReader(viewerP->readerP, filename);
 }
 
+void PrintStrInViewer(char* str, size_t strSize, winParams_t* winParamsP, size_t fontHeight, size_t* curHeightP) {
+    size_t curHeight = *curHeightP;
+
+    size_t curSymN = 0;
+    size_t symsCountToWr = 0;
+    while(curSymN < strSize) {
+        if(curSymN + winParamsP->widthInSyms < strSize) {
+            symsCountToWr = winParamsP->widthInSyms;
+        } else {
+            symsCountToWr = strSize - curSymN;
+        }
+        TextOut(winParamsP->hdc, WINDOW_MIN_X, curHeight, str + curSymN, symsCountToWr);
+
+        curSymN += symsCountToWr;
+        curHeight += fontHeight;
+    }
+
+    *curHeightP = curHeight;
+}
+
 void PrintTextInViewer(viewer_t* viewerP) {
-    //TODO: I should watch all parts of buffer between "\n", this parts I should print using parser
-    //Make line break if we see line break in buffer and if meet the end of rect
     winParams_t* winParamsP = viewerP->winParamsP;
     myFont_t* fontP = viewerP->fontP;
     reader_t* readerP = viewerP->readerP;
 
-    size_t strCount = readerP->bufferSize / winParamsP->widthInSyms;
+    //TODO: Refactor scrolling
     size_t curHeight = - winParamsP->vScrollPos * fontP->height;
     size_t curSymN = 0;
 
-    for(int i = 0; i < strCount; i++) {
-        TextOut(winParamsP->hdc, 0, curHeight, readerP->buffer + curSymN, winParamsP->widthInSyms);
-        curSymN += winParamsP->widthInSyms;
-        curHeight += fontP->height;
+    // Printing strings to '\n'
+    for(int i = 0; i < readerP->lnEndsSize; i++) {
+        // + 1 for \n
+        PrintStrInViewer(readerP->buffer + curSymN, readerP->lnEnds[i] - curSymN, winParamsP, fontP->height, &curHeight);
+        curSymN = readerP->lnEnds[i] + 1;
     }
+
+    //printing last string
+    PrintStrInViewer(readerP->buffer + curSymN, readerP->bufferSize - curSymN, winParamsP, fontP->height, &curHeight);
 }
 
 void ShowViewer(viewer_t* viewerP) {
@@ -86,4 +109,27 @@ void ClearViewer(viewer_t* viewerStaticP) {
     ClearReader(viewerStaticP->readerP);
     ClearWinParams(viewerStaticP->winParamsP);
     ClearFont(viewerStaticP->fontP);
+}
+
+void ScrollLineUpViewer(viewer_t* viewerP) {
+    if(viewerP->winParamsP->vScrollPos > 0) {
+        viewerP->winParamsP->vScrollPos -= 1;
+    }
+}
+
+void ScrollLineDownViewer(viewer_t* viewerP) {
+    //TODO: Remove opportunity to move under text
+    viewerP->winParamsP->vScrollPos += 1;
+}
+
+void ScrollPageUpViewer(viewer_t* viewerP) {
+    // TODO: Make this function
+    if(viewerP->winParamsP->vScrollPos > 0) {
+        viewerP->winParamsP->vScrollPos -= 1;
+    }
+}
+
+void ScrollPageDownViewer(viewer_t* viewerP) {
+    // TODO: Make this function
+    viewerP->winParamsP->vScrollPos += 1;
 }

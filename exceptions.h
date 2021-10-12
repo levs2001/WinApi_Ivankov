@@ -9,7 +9,9 @@ typedef enum {
     NULL_READER_POINTER,
     NULL_VIEWER_POINTER,
     NULL_WIN_PARAMS_POINTER,
-    NULL_FONT_POINTER
+    NULL_FONT_POINTER,
+    NULL_LN_ENDS_POINTER,
+    REALLOC_REFUSE_LN_ENDS
 } eException;
 
 void Exception(eException exceptionType);

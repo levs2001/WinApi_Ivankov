@@ -20,6 +20,12 @@ void Exception(eException exceptionType) {
     case NULL_FONT_POINTER:
         logMsg("Error: NULL font pointer.\n");
         break;
+    case NULL_LN_ENDS_POINTER:
+        logMsg("Error: NULL lnEnds pointer.\n");
+        break;
+    case REALLOC_REFUSE_LN_ENDS:
+        logMsg("Error: refused realloc for lnEnds array.\n");
+        break;
     }
 }
 

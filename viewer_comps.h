@@ -25,5 +25,9 @@ void ClearViewer(viewer_t* viewerP);
 void SendFileInViewer(viewer_t* viewerP, char* filename);
 void ShowViewer(viewer_t* viewerP);
 void ResizeViewer(viewer_t* viewerP, HWND hwnd);
+void ScrollLineDownViewer(viewer_t* viewerP);
+void ScrollLineUpViewer(viewer_t* viewerP);
+void ScrollPageUpViewer(viewer_t* viewerP);
+void ScrollPageDownViewer(viewer_t* viewerP);
 
 #endif

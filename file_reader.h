@@ -8,6 +8,8 @@
 typedef struct {
     char* buffer;
     size_t bufferSize;
+    size_t* lnEnds;
+    size_t lnEndsSize;
     // TODO: add array for \n and size of this array
 }reader_t;
 

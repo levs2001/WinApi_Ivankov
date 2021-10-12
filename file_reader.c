@@ -3,6 +3,9 @@
 #include "memory.h"
 #include <stdlib.h>
 
+#define LINE_END "\n"
+#define REALLOC_NUM 10
+
 FILE* OpenFileMy(char* filename) {
     FILE* filePointer = fopen(filename, "r");
 
@@ -38,6 +41,44 @@ void WriteFileInReader(reader_t* readerP, char* filename) {
 
     readerP->bufferSize = bufferSize;
     readerP->buffer = buffer;
+
+    InitLnEnds(readerP);
+}
+
+size_t* ExpandLnEnds(size_t* lnEnds, size_t newSize) {
+    size_t* newLnEnds = (size_t*)realloc(lnEnds, newSize);
+    if(newLnEnds == NULL) {
+        Exception(REALLOC_REFUSE_LN_ENDS);
+    }
+    return newLnEnds;
+}
+
+void InitLnEnds(reader_t* readerP) {
+    size_t lnEndsSize = 0;
+    size_t realMemSize = sizeof(size_t*) * REALLOC_NUM;
+    size_t* lnEnds = (size_t*)getMem(realMemSize, "lnEnds");
+
+    for(size_t i = 0; i < readerP->bufferSize; i++) {
+        if(readerP->buffer[i] == '\n') {
+            if(lnEndsSize >= realMemSize - 1) {
+                realMemSize += sizeof(size_t*) * REALLOC_NUM;
+                lnEnds = ExpandLnEnds(lnEnds, lnEndsSize);
+            }
+
+            lnEnds[lnEndsSize] = i;
+            lnEndsSize++;
+        }
+    }
+
+    readerP->lnEndsSize = lnEndsSize;
+    readerP->lnEnds = lnEnds;
+}
+
+void ClearLnEnds(size_t* lnEnds) {
+    if(lnEnds!=NULL)
+        freeMem(lnEnds, "lnEnds");
+    else
+        Exception(NULL_LN_ENDS_POINTER);
 }
 
 void ClearReader(reader_t* readerP) {
@@ -45,7 +86,7 @@ void ClearReader(reader_t* readerP) {
         Exception(NULL_READER_POINTER);
 
     ClearBuffer(readerP->buffer);
-    // TODO: Free array of \n here
+    ClearLnEnds(readerP->lnEnds);
     freeMem(readerP, "reader");
 }
 
