@@ -36,6 +36,7 @@ winParams_t* GetWinParams(myFont_t* myFontP, HWND hwnd) {
 void ResizeViewer(viewer_t* viewerP, HWND hwnd) {
     SetWindowSize(viewerP->winParamsP, hwnd);
     CountWinSizesInSyms(viewerP->fontP, viewerP->winParamsP);
+    // TODO: Here I can count printedLinesCount to know scrolling range
 }
 
 void ClearWinParams(winParams_t* winParamsP) {

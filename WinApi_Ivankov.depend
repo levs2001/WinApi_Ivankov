@@ -49,7 +49,7 @@
 	"text_comps.h"
 	"memory.h"
 
-1634071083 d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
+1634072273 d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.h
 	<stddef.h>
 	"file_reader.h"
 	"text_comps.h"
@@ -98,7 +98,7 @@
 	"memory.h"
 	<stdlib.h>
 
-1634071060 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
+1634073074 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
 	<tchar.h>
 	<windows.h>
 	"file_reader.h"

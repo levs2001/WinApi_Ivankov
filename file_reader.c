@@ -35,8 +35,6 @@ void WriteFileInReader(reader_t* readerP, char* filename) {
     char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
 
     fread(buffer, sizeof(char), bufferSize, filePointer);
-    // TODO: go through buffer and get \n array and size of it
-    // Expand array on REALLOC_SIZE
     CloseFile(filePointer);
 
     readerP->bufferSize = bufferSize;
