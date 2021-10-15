@@ -41,6 +41,7 @@ void WriteFileInReader(reader_t* readerP, char* filename) {
     readerP->buffer = buffer;
 
     InitLnEnds(readerP);
+    readerP->maxStrLen = GetMaxStrLen(readerP);
 }
 
 size_t* ExpandLnEnds(size_t* lnEnds, size_t newSize) {
@@ -49,6 +50,24 @@ size_t* ExpandLnEnds(size_t* lnEnds, size_t newSize) {
         Exception(REALLOC_REFUSE_LN_ENDS);
     }
     return newLnEnds;
+}
+
+size_t GetMaxStrLen(reader_t* readerP) {
+    // TODO: I should see case when no "\n"
+    size_t maxStrLen = readerP->lnEnds[0];
+
+    for(size_t i = 0; i < readerP->bufferSize; i++) {
+        if(readerP->lnEnds[i + 1] - readerP->lnEnds[i]) {
+            maxStrLen = readerP->lnEnds[i + 1] - readerP->lnEnds[i];
+        }
+    }
+
+    // Checking last str:
+    if(readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize > maxStrLen) {
+        maxStrLen = readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize;
+    }
+
+    return maxStrLen;
 }
 
 void InitLnEnds(reader_t* readerP) {

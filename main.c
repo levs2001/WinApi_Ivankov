@@ -48,7 +48,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                0,                   /* Extended possibilites for variation */
                szClassName,         /* Classname */
                _T("Code::Blocks Template Windows App"),       /* Title Text */
-               WS_OVERLAPPEDWINDOW | WS_VSCROLL, /* default window */
+               WS_OVERLAPPEDWINDOW | WS_VSCROLL | WS_HSCROLL, /* default window */
                CW_USEDEFAULT,       /* Windows decides the position */
                CW_USEDEFAULT,       /* where the window ends up on the screen */
                544,                 /* The programs width */
@@ -85,7 +85,6 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     case WM_CREATE: {
         InitViewer(&viewerStatic, hwnd);
         SendFileInViewer(&viewerStatic, TEST_FILENAME);
-
     }
     break;
     case WM_SIZE: {
@@ -93,19 +92,50 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         InvalidateRect(hwnd, NULL, TRUE);
     }
     break;
-    case WM_VSCROLL :
+    case WM_KEYDOWN: {
+        switch (wParam) {
+        case VK_UP:
+            ScrollVertLineUpViewer(&viewerStatic);
+            break;
+        case VK_DOWN:
+            ScrollVertLineDownViewer(&viewerStatic);
+            break;
+        case VK_PRIOR: //Page up key
+            ScrollVertPageUpViewer(&viewerStatic);
+            break;
+        case VK_NEXT: //Page down key
+            ScrollVertPageDownViewer(&viewerStatic);
+            break;
+        case VK_LEFT:
+            ScrollHorzLineUpViewer(&viewerStatic);
+            break;
+        case VK_RIGHT:
+            ScrollHorzLineDownViewer(&viewerStatic);
+            break;
+        }
+        if (viewerStatic.winParamsP->vScrollPos  != GetScrollPos(hwnd, SB_VERT)) {
+            SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
+            InvalidateRect(hwnd, NULL, TRUE);
+        }
+        if (viewerStatic.winParamsP->hScrollPos  != GetScrollPos(hwnd, SB_HORZ)) {
+            SetScrollPos(hwnd, SB_HORZ, viewerStatic.winParamsP->hScrollPos, TRUE);
+            InvalidateRect(hwnd, NULL, TRUE);
+        }
+    }
+    break;
+    case WM_VSCROLL: {
         switch(LOWORD(wParam)) {
         case SB_LINEUP:
-            ScrollLineUpViewer(&viewerStatic);
+            ScrollVertLineUpViewer(&viewerStatic);
             break;
         case SB_LINEDOWN:
-            ScrollLineDownViewer(&viewerStatic);
+            ScrollVertLineDownViewer(&viewerStatic);
             break;
         case SB_PAGEUP:
-            ScrollPageUpViewer(&viewerStatic);//-= (viewerStatic.winParamsP->height) / viewerStatic.fontP->height;
+            ScrollVertPageUpViewer(&viewerStatic);
             break;
         case SB_PAGEDOWN:
-            ScrollPageDownViewer(&viewerStatic);
+            ScrollVertPageDownViewer(&viewerStatic);
             break;
         case SB_THUMBPOSITION:
             viewerStatic.winParamsP->vScrollPos = HIWORD(wParam);
@@ -115,7 +145,32 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
             InvalidateRect(hwnd, NULL, TRUE);
         }
-        break;
+    }
+    break;
+    case WM_HSCROLL: {
+        switch(LOWORD(wParam)) {
+        case SB_LINEUP:
+            ScrollHorzLineUpViewer(&viewerStatic);
+            break;
+        case SB_LINEDOWN:
+            ScrollHorzLineDownViewer(&viewerStatic);
+            break;
+        case SB_PAGEUP:
+            ScrollHorzPageUpViewer(&viewerStatic);
+            break;
+        case SB_PAGEDOWN:
+            ScrollHorzPageDownViewer(&viewerStatic);
+            break;
+        case SB_THUMBPOSITION:
+            viewerStatic.winParamsP->hScrollPos = HIWORD(wParam);
+            break;
+        }
+        if (viewerStatic.winParamsP->hScrollPos  != GetScrollPos(hwnd, SB_HORZ)) {
+            SetScrollPos(hwnd, SB_HORZ, viewerStatic.winParamsP->hScrollPos, TRUE);
+            InvalidateRect(hwnd, NULL, TRUE);
+        }
+    }
+    break;
     case WM_PAINT: {
         hdc = BeginPaint(hwnd, &paintStruct);
         GetClientRect(hwnd, &windRect);

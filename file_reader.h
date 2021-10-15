@@ -10,6 +10,7 @@ typedef struct {
     size_t bufferSize;
     size_t* lnEnds;
     size_t lnEndsSize;
+    size_t maxStrLen;
     // TODO: add array for \n and size of this array
 }reader_t;
 
@@ -21,6 +22,6 @@ void WriteFileInReader(reader_t* readerP, char* filename);
 void ClearBuffer(char* buffer);
 void ClearReader(reader_t* readerP);
 void WriteFileInReader(reader_t* readerP, char* filename);
-
+size_t GetMaxStrLen(reader_t* readerP);
 #endif
 
