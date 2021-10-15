@@ -11,6 +11,7 @@ typedef struct {
     size_t heightInSyms;
     size_t vScrollPos;
     size_t hScrollPos;
+    size_t vScrollMax;
     HDC hdc;
 }winParams_t;
 

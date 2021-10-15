@@ -33,9 +33,31 @@ winParams_t* GetWinParams(myFont_t* myFontP, HWND hwnd) {
     return winParamsP;
 }
 
+size_t countPrLinesCount(viewer_t* viewerP) {
+    // This function dublicate logic of printing without printing and some other features
+    // It is just count lines that would be printed
+    // I use it for counting vScrollMax
+    size_t prLinesCount = 0;
+    for(int i = 0; i < readerP->lnEndsSize - 1; i++) {
+        // + 1 for \n
+        //prLinesCount =
+    }
+}
+
+void SetVscrollMax(viewer_t* viewerP) {
+    int prLinesCount = viewerP->readerP->bufferSize / viewerP->winParamsP->widthInSyms + viewerP->readerP->lnEndsSize;
+    if((int)(prLinesCount - viewerP->winParamsP->heightInSyms) >= 0)
+        viewerP->winParamsP->vScrollMax = prLinesCount - viewerP->winParamsP->heightInSyms;
+    else
+        viewerP->winParamsP->vScrollMax = 0;
+}
+
 void ResizeViewer(viewer_t* viewerP, HWND hwnd) {
     SetWindowSize(viewerP->winParamsP, hwnd);
     CountWinSizesInSyms(viewerP->fontP, viewerP->winParamsP);
+    SetVscrollMax(viewerP);
+    SetScrollRange(hwnd, SB_VERT, 0, viewerP->winParamsP->vScrollMax, FALSE);
+    //TODO: Check this count, it's just experiment
     // TODO: Here I can count printedLinesCount to know scrolling range
 }
 
@@ -95,7 +117,8 @@ void PrintTextInViewer(viewer_t* viewerP) {
     }
 
     //printing last string
-    PrintStrInViewer(readerP->buffer + curSymN, readerP->bufferSize - curSymN, winParamsP, fontP->height, &curHeight);
+    PrintStrInViewer(readerP->buffer + curSymN, readerP->bufferSize - curSymN - readerP->lnEndsSize,
+                     winParamsP, fontP->height, &curHeight);
 }
 
 void ShowViewer(viewer_t* viewerP) {
@@ -120,7 +143,9 @@ void ScrollLineUpViewer(viewer_t* viewerP) {
 
 void ScrollLineDownViewer(viewer_t* viewerP) {
     //TODO: Remove opportunity to move under text
-    viewerP->winParamsP->vScrollPos += 1;
+    if(viewerP->winParamsP->vScrollPos < viewerP->winParamsP->vScrollMax) {
+        viewerP->winParamsP->vScrollPos += 1;
+    }
 }
 
 void ScrollPageUpViewer(viewer_t* viewerP) {
@@ -132,5 +157,7 @@ void ScrollPageUpViewer(viewer_t* viewerP) {
 
 void ScrollPageDownViewer(viewer_t* viewerP) {
     // TODO: Make this function
-    viewerP->winParamsP->vScrollPos += 1;
+    if(viewerP->winParamsP->vScrollPos < viewerP->winParamsP->vScrollMax) {
+        viewerP->winParamsP->vScrollPos += 1;
+    }
 }
