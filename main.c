@@ -76,9 +76,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-    HDC hdc;
+    //HDC hdc;
     PAINTSTRUCT paintStruct;
-    RECT windRect;
+    //RECT windRect;
     static viewer_t viewerStatic;
 
     switch (message) {                /* handle the messages */
@@ -172,9 +172,8 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     }
     break;
     case WM_PAINT: {
-        hdc = BeginPaint(hwnd, &paintStruct);
-        GetClientRect(hwnd, &windRect);
-        ShowViewer(&viewerStatic);
+        HDC hdc = BeginPaint(hwnd, &paintStruct);
+ShowViewer(&viewerStatic);
 
         EndPaint(hwnd, &paintStruct);
     }

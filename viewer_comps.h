@@ -4,21 +4,9 @@
 #include<stdbool.h>
 #include"file_reader.h"
 #include"text_comps.h"
+#include"win_comps.h"
 
 #define HORZ_SCROLL false
-
-typedef struct {
-    size_t width;
-    size_t height;
-    size_t widthInSyms;
-    size_t heightInSyms;
-
-    size_t vScrollPos;
-    size_t hScrollPos;
-    size_t vScrollMax;
-    size_t hScrollMax;
-    HDC hdc;
-}winParams_t;
 
 typedef struct {
     reader_t* readerP;

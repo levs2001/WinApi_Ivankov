@@ -8,50 +8,26 @@
 #include"memory.h"
 
 #define WINDOW_MIN_X 0
-//TODO: Divide window functions
-//TODO: Fix horizontal scrolling
-
-void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP) {
-    winParamsP->widthInSyms = (winParamsP->width) / myFontP->width;
-    winParamsP->heightInSyms = (winParamsP->height) / myFontP->height;
-}
-
-void SetWindowSize(winParams_t* winParamsP, HWND hwnd) {
-    RECT winRect;
-    GetClientRect(hwnd, &winRect);
-    winParamsP->height = winRect.bottom - winRect.top;
-    winParamsP->width = winRect.right - winRect.left;
-}
-
-winParams_t* GetWinParams(myFont_t* myFontP, HWND hwnd) {
-    winParams_t* winParamsP = (winParams_t*)getMem(sizeof(winParams_t), "winParams");
-    winParamsP->hdc = GetDC(hwnd);
-
-    winParamsP->vScrollPos = 0;
-    winParamsP->hScrollPos = 0;
-
-    return winParamsP;
-}
 
 int CountPrLines(viewer_t* viewerP) {
     reader_t* readerP = viewerP->readerP;
 
-    //Count first str in file
+    //Counting first str in file
     int prLinesCount = ceil((double)readerP->lnEnds[0] / viewerP->winParamsP->widthInSyms);
 
-    //Count strs between \n
+    //Counting strs between \n
     for(int i = 0; i < readerP->lnEndsSize - 1; i++) {
         prLinesCount += ceil((double)(readerP->lnEnds[i + 1] - readerP->lnEnds[i]) / viewerP->winParamsP->widthInSyms);
     }
 
-    //Count last string
+    //Counting last string
     prLinesCount += ceil((double)(readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize)
                          / viewerP->winParamsP->widthInSyms);
     return prLinesCount;
 }
 
 void SetVscrollMax(viewer_t* viewerP) {
-    int prLinesCount = CountPrLines(viewerP);//viewerP->readerP->bufferSize / viewerP->winParamsP->widthInSyms + viewerP->readerP->lnEndsSize;
+    int prLinesCount = CountPrLines(viewerP);
     if((int)(prLinesCount - viewerP->winParamsP->heightInSyms) >= 0)
         viewerP->winParamsP->vScrollMax = prLinesCount - viewerP->winParamsP->heightInSyms;
     else
@@ -73,15 +49,6 @@ void ResizeViewer(viewer_t* viewerP, HWND hwnd) {
     SetHscrollMax(viewerP);
     SetScrollRange(hwnd, SB_VERT, 0, viewerP->winParamsP->vScrollMax, FALSE);
     SetScrollRange(hwnd, SB_HORZ, 0, viewerP->winParamsP->hScrollMax, FALSE);
-    //TODO: Check this count, it's just experiment
-    // TODO: Here I can count printedLinesCount to know scrolling range
-}
-
-void ClearWinParams(winParams_t* winParamsP) {
-    if(winParamsP == NULL)
-        Exception(NULL_WIN_PARAMS_POINTER);
-
-    freeMem(winParamsP, "winParams");
 }
 
 void InitViewer(viewer_t* viewerP, HWND hwnd) {
@@ -100,7 +67,6 @@ void SendFileInViewer(viewer_t* viewerP, char* filename) {
 }
 
 void PrintStrInViewer(char* str, size_t strSize, winParams_t* winParamsP, size_t fontHeight, size_t* curHeightP) {
-    // Case for "\n" in string
     if(strSize == 0) {
         TextOut(winParamsP->hdc, WINDOW_MIN_X, *curHeightP, "\n", 1);
         *curHeightP += fontHeight;
@@ -126,11 +92,12 @@ void PrintStrInViewer(char* str, size_t strSize, winParams_t* winParamsP, size_t
 }
 
 void PrintParsedTextInViewer(viewer_t* viewerP) {
+    //TODO: don't print out of window
+    // This printing is for mode without scrolling
     winParams_t* winParamsP = viewerP->winParamsP;
     myFont_t* fontP = viewerP->fontP;
     reader_t* readerP = viewerP->readerP;
 
-    //TODO: Refactor scrolling
     size_t curHeight = - winParamsP->vScrollPos * fontP->height;
     size_t curSymN = 0;
 
@@ -142,16 +109,18 @@ void PrintParsedTextInViewer(viewer_t* viewerP) {
     }
 
     //printing last string
-    PrintStrInViewer(readerP->buffer + curSymN, readerP->bufferSize - curSymN - readerP->lnEndsSize,
-                     winParamsP, fontP->height, &curHeight);
+    if(curHeight < winParamsP->height) {
+        PrintStrInViewer(readerP->buffer + curSymN, readerP->bufferSize - curSymN - readerP->lnEndsSize,
+                         winParamsP, fontP->height, &curHeight);
+    }
 }
 
 void PrintTextInViewer(viewer_t* viewerP) {
+    // This printing is for mode with scrolling
     winParams_t* winParamsP = viewerP->winParamsP;
     myFont_t* fontP = viewerP->fontP;
     reader_t* readerP = viewerP->readerP;
 
-    //TODO: Refactor scrolling
     size_t curHeight = - winParamsP->vScrollPos * fontP->height;
     size_t curWidth = - winParamsP->hScrollPos * fontP->width;
     size_t curSymN = 0;

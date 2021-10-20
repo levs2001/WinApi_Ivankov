@@ -60,6 +60,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="viewer_comps.h" />
+		<Unit filename="win_comps.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="win_comps.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

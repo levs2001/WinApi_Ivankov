@@ -56,8 +56,8 @@ size_t GetMaxStrLen(reader_t* readerP) {
     // TODO: I should see case when no "\n"
     size_t maxStrLen = readerP->lnEnds[0];
 
-    for(size_t i = 0; i < readerP->bufferSize; i++) {
-        if(readerP->lnEnds[i + 1] - readerP->lnEnds[i]) {
+    for(size_t i = 0; i < readerP->lnEndsSize - 1; i++) {
+        if(readerP->lnEnds[i + 1] - readerP->lnEnds[i] > maxStrLen) {
             maxStrLen = readerP->lnEnds[i + 1] - readerP->lnEnds[i];
         }
     }
