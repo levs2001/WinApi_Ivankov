@@ -29,45 +29,12 @@ void CloseFile(FILE* filePointer) {
     fclose(filePointer);
 }
 
-void WriteFileInReader(reader_t* readerP, char* filename) {
-    FILE* filePointer = OpenFileMy(filename);
-    size_t bufferSize = GetSizeFile(filePointer);
-    char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
-
-    fread(buffer, sizeof(char), bufferSize, filePointer);
-    CloseFile(filePointer);
-
-    readerP->bufferSize = bufferSize;
-    readerP->buffer = buffer;
-
-    InitLnEnds(readerP);
-    readerP->maxStrLen = GetMaxStrLen(readerP);
-}
-
 size_t* ExpandLnEnds(size_t* lnEnds, size_t newSize) {
     size_t* newLnEnds = (size_t*)realloc(lnEnds, newSize);
     if(newLnEnds == NULL) {
         Exception(REALLOC_REFUSE_LN_ENDS);
     }
     return newLnEnds;
-}
-
-size_t GetMaxStrLen(reader_t* readerP) {
-    // TODO: I should see case when no "\n"
-    size_t maxStrLen = readerP->lnEnds[0];
-
-    for(size_t i = 0; i < readerP->lnEndsSize - 1; i++) {
-        if(readerP->lnEnds[i + 1] - readerP->lnEnds[i] > maxStrLen) {
-            maxStrLen = readerP->lnEnds[i + 1] - readerP->lnEnds[i];
-        }
-    }
-
-    // Checking last str:
-    if(readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize > maxStrLen) {
-        maxStrLen = readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize;
-    }
-
-    return maxStrLen;
 }
 
 void InitLnEnds(reader_t* readerP) {
@@ -89,6 +56,39 @@ void InitLnEnds(reader_t* readerP) {
 
     readerP->lnEndsSize = lnEndsSize;
     readerP->lnEnds = lnEnds;
+}
+
+void WriteFileInReader(reader_t* readerP, char* filename) {
+    FILE* filePointer = OpenFileMy(filename);
+    size_t bufferSize = GetSizeFile(filePointer);
+    char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
+
+    fread(buffer, sizeof(char), bufferSize, filePointer);
+    CloseFile(filePointer);
+
+    readerP->bufferSize = bufferSize;
+    readerP->buffer = buffer;
+
+    InitLnEnds(readerP);
+    readerP->maxStrLen = GetMaxStrLen(readerP);
+}
+
+size_t GetMaxStrLen(reader_t* readerP) {
+    // TODO: I should see case when no "\n"
+    size_t maxStrLen = readerP->lnEnds[0];
+
+    for(size_t i = 0; i < readerP->lnEndsSize - 1; i++) {
+        if(readerP->lnEnds[i + 1] - readerP->lnEnds[i] > maxStrLen) {
+            maxStrLen = readerP->lnEnds[i + 1] - readerP->lnEnds[i];
+        }
+    }
+
+    // Checking last str:
+    if(readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize > maxStrLen) {
+        maxStrLen = readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize;
+    }
+
+    return maxStrLen;
 }
 
 void ClearLnEnds(size_t* lnEnds) {

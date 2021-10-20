@@ -66,29 +66,31 @@ void SendFileInViewer(viewer_t* viewerP, char* filename) {
     WriteFileInReader(viewerP->readerP, filename);
 }
 
-void PrintStrInViewer(char* str, size_t strSize, winParams_t* winParamsP, size_t fontHeight, size_t* curHeightP) {
+void PrintStrInViewer(char* str, size_t strSize, winParams_t* winParamsP, size_t fontHeight, int* shiftP) {
+    int shift = *shiftP;
+
     if(strSize == 0) {
-        TextOut(winParamsP->hdc, WINDOW_MIN_X, *curHeightP, "\n", 1);
-        *curHeightP += fontHeight;
-    }
-
-    size_t curHeight = *curHeightP;
-
-    size_t curSymN = 0;
-    size_t symsCountToWr = 0;
-    while(curSymN < strSize) {
-        if(curSymN + winParamsP->widthInSyms < strSize) {
-            symsCountToWr = winParamsP->widthInSyms;
-        } else {
-            symsCountToWr = strSize - curSymN;
+        if(shift >= 0 && shift < (int)winParamsP->height) {
+            TextOut(winParamsP->hdc, WINDOW_MIN_X, shift, "\n", 1);
         }
-        TextOut(winParamsP->hdc, WINDOW_MIN_X, curHeight, str + curSymN, symsCountToWr);
-
-        curSymN += symsCountToWr;
-        curHeight += fontHeight;
+        shift += fontHeight;
+    } else {
+        size_t curSymN = 0;
+        size_t symsCountToWr = 0;
+        while(curSymN < strSize) {
+            if(curSymN + winParamsP->widthInSyms < strSize) {
+                symsCountToWr = winParamsP->widthInSyms;
+            } else {
+                symsCountToWr = strSize - curSymN;
+            }
+            if(shift >= 0 && shift < (int)winParamsP->height) {
+                TextOut(winParamsP->hdc, WINDOW_MIN_X, shift, str + curSymN, symsCountToWr);
+            }
+            curSymN += symsCountToWr;
+            shift += fontHeight;
+        }
     }
-
-    *curHeightP = curHeight;
+    *shiftP = shift;
 }
 
 void PrintParsedTextInViewer(viewer_t* viewerP) {
@@ -98,20 +100,20 @@ void PrintParsedTextInViewer(viewer_t* viewerP) {
     myFont_t* fontP = viewerP->fontP;
     reader_t* readerP = viewerP->readerP;
 
-    size_t curHeight = - winParamsP->vScrollPos * fontP->height;
+    int shift = -winParamsP->vScrollPos * fontP->height;
     size_t curSymN = 0;
 
     // Printing strings to '\n'
-    for(int i = 0; i < readerP->lnEndsSize; i++) {
+    for(int i = 0; i < readerP->lnEndsSize && shift < (int)winParamsP->height; i++) {
         // + 1 for \n
-        PrintStrInViewer(readerP->buffer + curSymN, readerP->lnEnds[i] - curSymN, winParamsP, fontP->height, &curHeight);
+        PrintStrInViewer(readerP->buffer + curSymN, readerP->lnEnds[i] - curSymN, winParamsP, fontP->height, &shift);
         curSymN = readerP->lnEnds[i] + 1;
     }
 
     //printing last string
-    if(curHeight < winParamsP->height) {
+    if(shift < winParamsP->height) {
         PrintStrInViewer(readerP->buffer + curSymN, readerP->bufferSize - curSymN - readerP->lnEndsSize,
-                         winParamsP, fontP->height, &curHeight);
+                         winParamsP, fontP->height, &shift);
     }
 }
 

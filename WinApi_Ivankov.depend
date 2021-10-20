@@ -100,7 +100,7 @@
 	"memory.h"
 	<stdlib.h>
 
-1634731292 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
+1634738210 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
 	<tchar.h>
 	<windows.h>
 	"file_reader.h"
@@ -117,7 +117,7 @@
 	"text_comps.h"
 	"memory.h"
 
-1634731889 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.c
+1634739224 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.c
 	<stdlib.h>
 	<windows.h>
 	<math.h>
