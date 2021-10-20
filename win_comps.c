@@ -1,6 +1,6 @@
 #include"win_comps.h"
 #include"exceptions.h"
-
+#include"memory.h"
 void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP) {
     winParamsP->widthInSyms = (winParamsP->width) / myFontP->width;
     winParamsP->heightInSyms = (winParamsP->height) / myFontP->height;

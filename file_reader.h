@@ -11,17 +11,15 @@ typedef struct {
     size_t* lnEnds;
     size_t lnEndsSize;
     size_t maxStrLen;
-    // TODO: add array for \n and size of this array
 }reader_t;
 
 
-FILE* OpenFileMy(char* filename);
-void CloseFile(FILE* filePointer);
-size_t GetSizeFile(FILE* filePointer);
+//FILE* OpenFileMy(char* filename);
+//void CloseFile(FILE* filePointer);
+//size_t GetSizeFile(FILE* filePointer);
 void WriteFileInReader(reader_t* readerP, char* filename);
-void ClearBuffer(char* buffer);
+//void ClearBuffer(char* buffer);
 void ClearReader(reader_t* readerP);
-void WriteFileInReader(reader_t* readerP, char* filename);
-size_t GetMaxStrLen(reader_t* readerP);
+//size_t GetMaxStrLen(reader_t* readerP);
 #endif
 

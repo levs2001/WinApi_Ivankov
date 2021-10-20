@@ -78,13 +78,13 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     //HDC hdc;
     PAINTSTRUCT paintStruct;
-    //RECT windRect;
     static viewer_t viewerStatic;
 
     switch (message) {                /* handle the messages */
     case WM_CREATE: {
         InitViewer(&viewerStatic, hwnd);
         SendFileInViewer(&viewerStatic, TEST_FILENAME);
+        //ResizeViewer(&viewerStatic, hwnd);
     }
     break;
     case WM_SIZE: {
@@ -172,7 +172,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     }
     break;
     case WM_PAINT: {
-        HDC hdc = BeginPaint(hwnd, &paintStruct);
+        BeginPaint(hwnd, &paintStruct);
         ShowViewer(&viewerStatic);
 
         EndPaint(hwnd, &paintStruct);

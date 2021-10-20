@@ -31,7 +31,7 @@
 	"memory.h"
 	<stdlib.h>
 
-1634328758 d:\myprogramms\codeblocks\winapi_ivankov\file_reader.h
+1634763143 d:\myprogramms\codeblocks\winapi_ivankov\file_reader.h
 	<stdio.h>
 
 1633979699 source:d:\myprogramms\codeblocks\winapi_ivankov\main.cpp
@@ -94,13 +94,13 @@
 1634065281 source:d:\myprogramms\codeblocks\winapi_ivankov\exceptions.c
 	"exceptions.h"
 
-1634729223 source:d:\myprogramms\codeblocks\winapi_ivankov\file_reader.c
+1634763724 source:d:\myprogramms\codeblocks\winapi_ivankov\file_reader.c
 	"file_reader.h"
 	"exceptions.h"
 	"memory.h"
 	<stdlib.h>
 
-1634738210 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
+1634763753 source:d:\myprogramms\codeblocks\winapi_ivankov\main.c
 	<tchar.h>
 	<windows.h>
 	"file_reader.h"
@@ -117,7 +117,7 @@
 	"text_comps.h"
 	"memory.h"
 
-1634739224 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.c
+1634762788 source:d:\myprogramms\codeblocks\winapi_ivankov\viewer_comps.c
 	<stdlib.h>
 	<windows.h>
 	<math.h>
@@ -165,12 +165,13 @@
 	"text_comps.h"
 	"memory.h"
 
-1634728413 d:\myprogramms\codeblocks\winapi_ivankov\win_comps.h
+1634760990 d:\myprogramms\codeblocks\winapi_ivankov\win_comps.h
 	<stddef.h>
 	<windows.h>
 	"text_comps.h"
 
-1634728437 source:d:\myprogramms\codeblocks\winapi_ivankov\win_comps.c
+1634760990 source:d:\myprogramms\codeblocks\winapi_ivankov\win_comps.c
 	"win_comps.h"
 	"exceptions.h"
+	"memory.h"
 
