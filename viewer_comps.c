@@ -30,7 +30,7 @@ void SetPrintedBuffIndexes(viewer_t* viewerP) {
     reader_t* readerP = viewerP->readerP;
 
     size_t firstPrI = 0;
-    //Количество символо набранных до перехода строки
+    //Количество символов набранных до перехода строки
     size_t collectedSymsN = 0;
     //Количесво строк от начала, которые должны быть пропущены
     long shift = winParamsP->vScrollPos;
@@ -49,7 +49,7 @@ void SetPrintedBuffIndexes(viewer_t* viewerP) {
     shift = winParamsP->heightInSyms;
     collectedSymsN = 0;
 
-    for(lastPrI = firstPrI; (long)lastPrI < (long)readerP->bufferSize - 1 && shift > 0; lastPrI++) {
+    for(lastPrI = firstPrI; (long)lastPrI < (long)readerP->bufferSize && shift > 0; lastPrI++) {
         if(readerP->buffer[lastPrI] == '\n'
                 || (collectedSymsN >= winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
             collectedSymsN = 0;

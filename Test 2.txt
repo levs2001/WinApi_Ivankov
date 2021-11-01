@@ -14,7 +14,7 @@
 
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
-TCHAR szClassName[ ] = _T("SaskovViewer");
+TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
 TCHAR szMyMenu[ ] = _T("MyMenu");
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
@@ -40,7 +40,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
     wincl.cbWndExtra = 0;                      /* structure or the window instance */
     /* Use Windows's default colour as the background of the window */
-    wincl.hbrBackground = CreateSolidBrush(RGB(255,255,255));//(HBRUSH) COLOR_BACKGROUND;
+    wincl.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
 
     /* Register the window class, and if it fails quit the program */
     if (!RegisterClassEx (&wincl))

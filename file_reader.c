@@ -20,12 +20,12 @@ void WriteFileInReader(reader_t* readerP, char* filename) {
     size_t bufferSize = GetSizeFile(filePointer);
     char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
 
-    fread(buffer, sizeof(char), bufferSize, filePointer);
+    //Борьба с каретками
+    bufferSize = fread(buffer, sizeof(char), bufferSize, filePointer);
     CloseFile(filePointer);
 
     readerP->bufferSize = bufferSize;
     readerP->buffer = buffer;
-    //TODO: Both functions calls segmentation fault, fix it
     InitLnEnds(readerP);
     readerP->maxStrLen = GetMaxStrLen(readerP);
 }
