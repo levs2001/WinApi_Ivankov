@@ -65,7 +65,7 @@ void SetPrintedBuffIndexes(viewer_t* viewerP) {
 void InitViewer(viewer_t* viewerP, HWND hwnd) {
     viewerP->readerP = (reader_t*)getMem(sizeof(reader_t), "reader");
 
-    EmptyReader(viewerP->readerP);
+    NullifyReader(viewerP->readerP);
     viewerP->firstPrSymI = 0;
     viewerP->lastPrSymI = 0;
 

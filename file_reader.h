@@ -16,5 +16,6 @@ typedef struct {
 void WriteFileInReader(reader_t* readerP, char* filename);
 void ClearReader(reader_t* readerP);
 void EmptyReader(reader_t* readerP);
+void NullifyReader(reader_t* readerP);
 #endif
 

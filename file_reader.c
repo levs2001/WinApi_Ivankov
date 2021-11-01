@@ -20,7 +20,6 @@ void WriteFileInReader(reader_t* readerP, char* filename) {
     size_t bufferSize = GetSizeFile(filePointer);
     char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
 
-    //Борьба с каретками
     bufferSize = fread(buffer, sizeof(char), bufferSize, filePointer);
     CloseFile(filePointer);
 
@@ -40,6 +39,10 @@ void EmptyReader(reader_t* readerP) {
         ClearLnEnds(readerP->lnEnds);
     }
 
+    NullifyReader(readerP);
+}
+
+void NullifyReader(reader_t* readerP) {
     readerP->buffer = NULL;
     readerP->lnEnds = NULL;
     readerP->bufferSize = 0;
