@@ -21,5 +21,6 @@ void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP);
 void SetWindowSize(winParams_t* winParamsP, HWND hwnd);
 winParams_t* GetWinParams(myFont_t* myFontP, HWND hwnd);
 void ClearWinParams(winParams_t* winParamsP);
+BOOL OpenFileDlg(HWND hwnd, PTCHAR name);
 
 #endif

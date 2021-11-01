@@ -3,7 +3,7 @@
 
 #include<stdio.h>
 
-#define TEST_FILENAME "test_for_lab.txt"
+#define TEST_FILENAME "D:\\MyProgramms\\CodeBlocks\\WinApi_Ivankov\\test_for_lab.txt"
 
 typedef struct {
     char* buffer;
@@ -20,6 +20,7 @@ typedef struct {
 void WriteFileInReader(reader_t* readerP, char* filename);
 //void ClearBuffer(char* buffer);
 void ClearReader(reader_t* readerP);
+void EmptyReader(reader_t* readerP);
 //size_t GetMaxStrLen(reader_t* readerP);
 #endif
 

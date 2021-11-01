@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "exceptions.h"
 #include "text_comps.h"
-#include"memory.h"
+#include "memory.h"
 
 #define DEFAULT_MYFONT_HEIGHT 17
 #define DEFAULT_MYFONT_WIDTH 8

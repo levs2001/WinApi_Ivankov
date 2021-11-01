@@ -8,11 +8,14 @@
 #include <windows.h>
 #include "file_reader.h"
 #include "viewer_comps.h"
+#include "scrolling.h"
+#include "mymenu.h"
 
 
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
+TCHAR szMyMenu[ ] = _T("MyMenu");
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -33,7 +36,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
     wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
     wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
-    wincl.lpszMenuName = NULL;                 /* No menu */
+    wincl.lpszMenuName = szMyMenu;
     wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
     wincl.cbWndExtra = 0;                      /* structure or the window instance */
     /* Use Windows's default colour as the background of the window */
@@ -76,15 +79,12 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-    //HDC hdc;
     PAINTSTRUCT paintStruct;
     static viewer_t viewerStatic;
 
     switch (message) {                /* handle the messages */
     case WM_CREATE: {
         InitViewer(&viewerStatic, hwnd);
-        SendFileInViewer(&viewerStatic, TEST_FILENAME);
-        //ResizeViewer(&viewerStatic, hwnd);
     }
     break;
     case WM_SIZE: {
@@ -115,6 +115,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
         if (viewerStatic.winParamsP->vScrollPos  != GetScrollPos(hwnd, SB_VERT)) {
             SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
+            SetPrintedBuffIndexes(&viewerStatic);
             InvalidateRect(hwnd, NULL, TRUE);
         }
         if (viewerStatic.winParamsP->hScrollPos  != GetScrollPos(hwnd, SB_HORZ)) {
@@ -143,8 +144,10 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
         if (viewerStatic.winParamsP->vScrollPos  != GetScrollPos(hwnd, SB_VERT)) {
             SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
+            SetPrintedBuffIndexes(&viewerStatic);
             InvalidateRect(hwnd, NULL, TRUE);
         }
+
     }
     break;
     case WM_HSCROLL: {
@@ -184,6 +187,43 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     }
     break;
 
+    case WM_COMMAND: {
+        switch(LOWORD(wParam)) {
+        case IDM_OPEN: {
+            CloseFileInViewer(&viewerStatic);
+            char filename[MAX_PATH];
+            OpenFileDlg(hwnd, filename);
+            SendFileInViewer(&viewerStatic, filename);
+            ResizeViewer(&viewerStatic, hwnd);
+            InvalidateRect(hwnd, NULL, TRUE);
+            break;
+        }
+        case IDM_CLOSE: {
+            CloseFileInViewer(&viewerStatic);
+            ResizeViewer(&viewerStatic, hwnd);
+            InvalidateRect(hwnd, NULL, TRUE);
+            break;
+        }
+        case IDM_WRAP_OFF: {
+            WrapOffViewer(&viewerStatic);
+            ResizeViewer(&viewerStatic, hwnd);
+            InvalidateRect(hwnd, NULL, TRUE);
+            break;
+        }
+        case IDM_WRAP_ON: {
+            WrapOnViewer(&viewerStatic);
+            ResizeViewer(&viewerStatic, hwnd);
+            InvalidateRect(hwnd, NULL, TRUE);
+            break;
+        }
+        case IDM_EXIT: {
+            ClearViewer(&viewerStatic);
+            PostQuitMessage (0);
+            break;
+        }
+        }
+    }
+    break;
 
     default:                      /* for messages that we don't deal with */
         return DefWindowProc (hwnd, message, wParam, lParam);

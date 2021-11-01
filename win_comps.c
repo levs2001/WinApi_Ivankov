@@ -29,3 +29,29 @@ void ClearWinParams(winParams_t* winParamsP) {
 
     freeMem(winParamsP, "winParams");
 }
+
+BOOL OpenFileDlg(HWND hwnd, PTCHAR name) {
+    static OPENFILENAME ofn;
+    static char szFilter[] = "Text Files(*.TXT)\0*.txt\0";
+
+    ZeroMemory(&ofn, sizeof(ofn));
+
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFile = name;
+    ofn.nMaxFile = _MAX_PATH;
+    ofn.lpstrFilter = szFilter;
+    ofn.nFilterIndex = 1;
+    ofn.lpstrTitle = TEXT("Пожалуйста, выберите файл");
+    ofn.lpstrInitialDir = NULL;
+    ofn.lpstrCustomFilter = NULL;
+    ofn.nMaxCustFilter = 0;
+    ofn.nFileOffset = 0;
+    ofn.nFileExtension = 0;
+    ofn.lpstrDefExt = "txt";
+    ofn.lCustData = 0;
+    ofn.lpfnHook = NULL;
+    ofn.lpTemplateName = NULL;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    return GetOpenFileName(&ofn);
+}

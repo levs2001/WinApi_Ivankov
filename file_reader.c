@@ -25,18 +25,30 @@ void WriteFileInReader(reader_t* readerP, char* filename) {
 
     readerP->bufferSize = bufferSize;
     readerP->buffer = buffer;
-
     //TODO: Both functions calls segmentation fault, fix it
     InitLnEnds(readerP);
     readerP->maxStrLen = GetMaxStrLen(readerP);
 }
 
-void ClearReader(reader_t* readerP) {
+void EmptyReader(reader_t* readerP) {
     if(readerP==NULL)
         Exception(NULL_READER_POINTER);
+    if(readerP->buffer != NULL) {
+        ClearBuffer(readerP->buffer);
+    }
+    if(readerP->lnEnds != NULL) {
+        ClearLnEnds(readerP->lnEnds);
+    }
 
-    ClearBuffer(readerP->buffer);
-    ClearLnEnds(readerP->lnEnds);
+    readerP->buffer = NULL;
+    readerP->lnEnds = NULL;
+    readerP->bufferSize = 0;
+    readerP->lnEndsSize = 0;
+    readerP->maxStrLen = 0;
+}
+
+void ClearReader(reader_t* readerP) {
+    EmptyReader(readerP);
     freeMem(readerP, "reader");
 }
 
@@ -94,20 +106,23 @@ static void InitLnEnds(reader_t* readerP) {
 
 static size_t GetMaxStrLen(reader_t* readerP) {
     // TODO: I should see case when no "\n"
-    size_t maxStrLen = readerP->lnEnds[0];
+    if(readerP->lnEndsSize > 0) {
+        size_t maxStrLen = readerP->lnEnds[0];
 
-    for(size_t i = 0; i < readerP->lnEndsSize - 1; i++) {
-        if(readerP->lnEnds[i + 1] - readerP->lnEnds[i] > maxStrLen) {
-            maxStrLen = readerP->lnEnds[i + 1] - readerP->lnEnds[i];
+        for(size_t i = 0; i < readerP->lnEndsSize - 1; i++) {
+            if(readerP->lnEnds[i + 1] - readerP->lnEnds[i] > maxStrLen) {
+                maxStrLen = readerP->lnEnds[i + 1] - readerP->lnEnds[i];
+            }
         }
+
+        // Checking last str:
+        if((long)(readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize) > (long)maxStrLen) {
+            maxStrLen = readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize;
+        }
+        return maxStrLen;
     }
 
-    // Checking last str:
-    if(readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize > maxStrLen) {
-        maxStrLen = readerP->bufferSize - readerP->lnEnds[readerP->lnEndsSize - 1] - readerP->lnEndsSize;
-    }
-
-    return maxStrLen;
+    return readerP->bufferSize;
 }
 
 static void ClearLnEnds(size_t* lnEnds) {

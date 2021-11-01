@@ -1,6 +1,6 @@
 #ifndef HEADER_TEXT_COMPS
 #define HEADER_TEXT_COMPS
-
+#include <windows.h>
 typedef struct {
     size_t height;
     size_t width;
