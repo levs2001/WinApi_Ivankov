@@ -94,7 +94,7 @@ static void InitLnEnds(reader_t* readerP) {
                 lnEndsGivenSize += REALLOC_NUM;
                 lnEnds = ExpandLnEnds(lnEnds, lnEndsGivenSize*sizeof(size_t));
             }
-//
+
             lnEnds[lnEndsSize] = i;
             lnEndsSize++;
         }
@@ -105,7 +105,6 @@ static void InitLnEnds(reader_t* readerP) {
 }
 
 static size_t GetMaxStrLen(reader_t* readerP) {
-    // TODO: I should see case when no "\n"
     if(readerP->lnEndsSize > 0) {
         size_t maxStrLen = readerP->lnEnds[0];
 

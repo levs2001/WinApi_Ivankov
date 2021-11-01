@@ -13,14 +13,8 @@ typedef struct {
     size_t maxStrLen;
 }reader_t;
 
-
-//FILE* OpenFileMy(char* filename);
-//void CloseFile(FILE* filePointer);
-//size_t GetSizeFile(FILE* filePointer);
 void WriteFileInReader(reader_t* readerP, char* filename);
-//void ClearBuffer(char* buffer);
 void ClearReader(reader_t* readerP);
 void EmptyReader(reader_t* readerP);
-//size_t GetMaxStrLen(reader_t* readerP);
 #endif
 
