@@ -30,28 +30,21 @@ void ClearWinParams(winParams_t* winParamsP) {
     freeMem(winParamsP, "winParams");
 }
 
-BOOL OpenFileDlg(HWND hwnd, PTCHAR name) {
-    static OPENFILENAME ofn;
-    static char szFilter[] = "Text Files(*.TXT)\0*.txt\0";
-
+BOOL OpenFileDlg(HWND hwnd, LPSTR szFile) {
+    OPENFILENAME ofn;       // common dialog box structure
+    // Initialize OPENFILENAME
     ZeroMemory(&ofn, sizeof(ofn));
-
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFile = name;
-    ofn.nMaxFile = _MAX_PATH;
-    ofn.lpstrFilter = szFilter;
+    ofn.lpstrFile = szFile;
+    ofn.lpstrFile[0] = '\0';
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = "Text Files(*.TXT)\0*.txt\0";
     ofn.nFilterIndex = 1;
-    ofn.lpstrTitle = TEXT("Пожалуйста, выберите файл");
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
     ofn.lpstrInitialDir = NULL;
-    ofn.lpstrCustomFilter = NULL;
-    ofn.nMaxCustFilter = 0;
-    ofn.nFileOffset = 0;
-    ofn.nFileExtension = 0;
-    ofn.lpstrDefExt = "txt";
-    ofn.lCustData = 0;
-    ofn.lpfnHook = NULL;
-    ofn.lpTemplateName = NULL;
-    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
     return GetOpenFileName(&ofn);
 }

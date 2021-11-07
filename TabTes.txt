@@ -1,3 +1,0 @@
-    size_t bufferSize = GetSizeFile(filePointer);
-    char* buffer = (char*)getMem(bufferSize * sizeof(char), "buffer");
-

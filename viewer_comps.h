@@ -23,6 +23,10 @@ void ShowViewer(viewer_t* viewerP);
 void ResizeViewer(viewer_t* viewerP, HWND hwnd);
 void SetPrintedBuffIndexes(viewer_t* viewerP);
 
+void ProcessVscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
+void ProcessHscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
+void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
+
 void WrapOnViewer(viewer_t* viewerP);
 void WrapOffViewer(viewer_t* viewerP);
 void CloseFileInViewer(viewer_t* viewerP);

@@ -93,109 +93,38 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     }
     break;
     case WM_KEYDOWN: {
-        switch (wParam) {
-        case VK_UP:
-            ScrollVertLineUpViewer(&viewerStatic);
-            break;
-        case VK_DOWN:
-            ScrollVertLineDownViewer(&viewerStatic);
-            break;
-        case VK_PRIOR: //Page up key
-            ScrollVertPageUpViewer(&viewerStatic);
-            break;
-        case VK_NEXT: //Page down key
-            ScrollVertPageDownViewer(&viewerStatic);
-            break;
-        case VK_LEFT:
-            ScrollHorzLineUpViewer(&viewerStatic);
-            break;
-        case VK_RIGHT:
-            ScrollHorzLineDownViewer(&viewerStatic);
-            break;
-        }
-        if (viewerStatic.winParamsP->vScrollPos  != GetScrollPos(hwnd, SB_VERT)) {
-            SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
-            SetPrintedBuffIndexes(&viewerStatic);
-            InvalidateRect(hwnd, NULL, TRUE);
-        }
-        if (viewerStatic.winParamsP->hScrollPos  != GetScrollPos(hwnd, SB_HORZ)) {
-            SetScrollPos(hwnd, SB_HORZ, viewerStatic.winParamsP->hScrollPos, TRUE);
-            InvalidateRect(hwnd, NULL, TRUE);
-        }
+        ProcessKeyDownViewer(&viewerStatic, hwnd, wParam);
     }
     break;
     case WM_VSCROLL: {
-        switch(LOWORD(wParam)) {
-        case SB_LINEUP:
-            ScrollVertLineUpViewer(&viewerStatic);
-            break;
-        case SB_LINEDOWN:
-            ScrollVertLineDownViewer(&viewerStatic);
-            break;
-        case SB_PAGEUP:
-            ScrollVertPageUpViewer(&viewerStatic);
-            break;
-        case SB_PAGEDOWN:
-            ScrollVertPageDownViewer(&viewerStatic);
-            break;
-        case SB_THUMBPOSITION:
-            viewerStatic.winParamsP->vScrollPos = HIWORD(wParam);
-            break;
-        }
-        if (viewerStatic.winParamsP->vScrollPos  != GetScrollPos(hwnd, SB_VERT)) {
-            SetScrollPos(hwnd, SB_VERT, viewerStatic.winParamsP->vScrollPos, TRUE);
-            SetPrintedBuffIndexes(&viewerStatic);
-            InvalidateRect(hwnd, NULL, TRUE);
-        }
-
+        ProcessVscrollViewer(&viewerStatic, hwnd, wParam);
     }
     break;
     case WM_HSCROLL: {
-        switch(LOWORD(wParam)) {
-        case SB_LINEUP:
-            ScrollHorzLineUpViewer(&viewerStatic);
-            break;
-        case SB_LINEDOWN:
-            ScrollHorzLineDownViewer(&viewerStatic);
-            break;
-        case SB_PAGEUP:
-            ScrollHorzPageUpViewer(&viewerStatic);
-            break;
-        case SB_PAGEDOWN:
-            ScrollHorzPageDownViewer(&viewerStatic);
-            break;
-        case SB_THUMBPOSITION:
-            viewerStatic.winParamsP->hScrollPos = HIWORD(wParam);
-            break;
-        }
-        if (viewerStatic.winParamsP->hScrollPos  != GetScrollPos(hwnd, SB_HORZ)) {
-            SetScrollPos(hwnd, SB_HORZ, viewerStatic.winParamsP->hScrollPos, TRUE);
-            InvalidateRect(hwnd, NULL, TRUE);
-        }
+        ProcessHscrollViewer(&viewerStatic, hwnd, wParam);
     }
     break;
     case WM_PAINT: {
         BeginPaint(hwnd, &paintStruct);
         ShowViewer(&viewerStatic);
-
         EndPaint(hwnd, &paintStruct);
     }
     break;
     case WM_DESTROY: {
         ClearViewer(&viewerStatic);
-        PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+        PostQuitMessage(0);       /* send a WM_QUIT to the message queue */
     }
     break;
-
     case WM_COMMAND: {
         switch(LOWORD(wParam)) {
         case IDM_OPEN: {
             CloseFileInViewer(&viewerStatic);
             char filename[MAX_PATH];
-            OpenFileDlg(hwnd, filename);
-            SendFileInViewer(&viewerStatic, filename);
-            ResizeViewer(&viewerStatic, hwnd);
-            InvalidateRect(hwnd, NULL, TRUE);
+            if(OpenFileDlg(hwnd, filename)) {
+                SendFileInViewer(&viewerStatic, filename);
+                ResizeViewer(&viewerStatic, hwnd);
+                InvalidateRect(hwnd, NULL, TRUE);
+            }
             break;
         }
         case IDM_CLOSE: {
@@ -218,7 +147,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
         case IDM_EXIT: {
             ClearViewer(&viewerStatic);
-            PostQuitMessage (0);
+            PostQuitMessage(0);
             break;
         }
         }
