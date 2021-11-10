@@ -1,3 +1,8 @@
+/*
+    В файле записаны идентификаторы кнопок меню
+    Само меню записано в файле mymenu.rc
+*/
+
 #ifndef HEADER_MYMENU
 #define HEADER_MYMENU
 

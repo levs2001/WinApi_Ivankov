@@ -2,6 +2,13 @@
 #include"exceptions.h"
 #include"memory.h"
 
+/*
+    ќтображает размеры окна на размеры окна в символах (сколько можно записать по вертикали и горизонтали),
+    перезаписывает эти параметры.
+        params:
+            winParamsP - указатель на структуру с параметрами окна
+            myFontP - указатель на параметры используемого в окне шрифта
+*/
 static void CountWinSizesInSyms(winParams_t* winParamsP, myFont_t* myFontP) {
     winParamsP->widthInSyms = (winParamsP->width) / myFontP->width;
     winParamsP->heightInSyms = (winParamsP->height) / myFontP->height;
@@ -36,13 +43,13 @@ void ClearWinParams(winParams_t* winParamsP) {
     freeMem(winParamsP, "winParams");
 }
 
-BOOL OpenFileDlg(HWND hwnd, LPSTR szFile) {
+bool OpenFileDlg(HWND hwnd, LPSTR filenameP) {
     OPENFILENAME ofn;       // common dialog box structure
     // Initialize OPENFILENAME
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFile = szFile;
+    ofn.lpstrFile = filenameP;
     ofn.lpstrFile[0] = '\0';
     ofn.nMaxFile = MAX_PATH;
     ofn.lpstrFilter = "Text Files(*.TXT)\0*.txt\0";

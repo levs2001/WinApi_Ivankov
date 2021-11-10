@@ -1,27 +1,67 @@
 #ifndef HEADER_WIN_COMPS
 #define HEADER_WIN_COMPS
 #include<stddef.h>
+#include<stdbool.h>
 #include<windows.h>
 #include"text_comps.h"
 
+// —труктура, хран€ща€ параметры окна
 typedef struct {
+    // Ўирина окна
     size_t width;
+    // ¬ысота окна
     size_t height;
+    //  оличество символов, которые могут поместитьс€ в одной строке, не выход€ за пределы окна
     size_t widthInSyms;
+    //  оличество строк, которые могут поместитьс€, не выход€ за пределы окна
     size_t heightInSyms;
-
+    // ѕозици€ вертикального скроллинга
     size_t vScrollPos;
+    // ѕозици€ горизонтального сроллинга
     size_t hScrollPos;
+    // ћаксимально возможна€ позици€ вертикального скроллинга, обычно равна количеству строк,
+    // которые можно просмотреть в viewer
     size_t vScrollMax;
+    // ћаксимально возможна€ позици€ горизонтального скроллинга, обычно равна длине максимальной строки
     size_t hScrollMax;
-//    HDC hdc;
 }winParams_t;
 
-//void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP);
-//void SetWindowSize(winParams_t* winParamsP, HWND hwnd);
+/*
+    »нициализирует значени€ структуры параметров окна, выдел€ет под нее пам€ть
+    params:
+        hwnd - указатель на окно, где мы отображаем viewer
+        myFontP - указатель на структуру с параметрами используемого шрифта
+    return:
+        указатель на мою структуру с параметрами окна
+*/
 winParams_t* InitWinParams(HWND hwnd, myFont_t* myFontP);
+
+/*
+    ћен€ет параметры окна в зависимости от размеров окна, в которое отображаетс€ окно
+    params:
+        winParamsP - указатель на мою структуру с параметрами окна
+        hwnd - указатель на окно, где мы отображаем viewer
+        myFontP - указатель на структуру с параметрами используемого шрифта
+*/
 void ResizeWinParams(winParams_t* winParamsP, HWND hwnd, myFont_t* myFontP);
+
+/*
+    ќсвобождает пам€ть, выделенную на структуру с параметрами окна
+    params:
+        winParamsP - указатель на мою структуру с параметрами окна
+*/
 void ClearWinParams(winParams_t* winParamsP);
-BOOL OpenFileDlg(HWND hwnd, PTCHAR name);
+
+/*
+    —оздает модальный диалог, в котором пользователь может выбрать файл
+    «аписывает им€ файла в filenameP
+    params:
+        hwnd - указатель на окно владельца
+        filenameP - указатель на строку, куда должно записатьс€ им€ файла
+    return:
+        true - в случае успеха
+        false - в случае неудачи (например, если выбрали не текстовый файл)
+*/
+bool OpenFileDlg(HWND hwnd, LPSTR filenameP);
 
 #endif

@@ -6,6 +6,7 @@
 #include"text_comps.h"
 #include"win_comps.h"
 
+// √лавна€ структура в проекте, в ней вс€ информаци€ о viewer
 typedef struct {
     // ”казатель на reader в котором содержатс€ все данные о выводимом тексте
     reader_t* readerP;

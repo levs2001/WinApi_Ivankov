@@ -4,16 +4,75 @@
 #include <stdlib.h>
 
 #define LINE_END "\n"
+// На сколько расширяем массив концов строк
 #define REALLOC_NUM 10
 
+/*
+    Открывает файл на чтение
+    params:
+        filename - имя файла
+    return:
+        Указатель на поток открытого файла
+*/
 static FILE* OpenFileMy(char* filename);
+
+/*
+    Вычисляет количество символов в файле
+    params:
+        filePointer - указатель на поток открытого файла
+    return:
+        Количество символов в файле
+*/
 static size_t GetSizeFile(FILE* filePointer);
+
+/*
+    Закрывает открытый файл
+    params:
+        filePointer - указатель на поток открытого файла
+*/
 static void CloseFile(FILE* filePointer);
-static size_t* ExpandLnEnds(size_t* lnEnds, size_t newSize);
+
+/*
+    Записывает в массив lnEnds индексы символов концов строк в тексте
+    params:
+        readerP - указатель на структуру с содержимым файла
+*/
 static void InitLnEnds(reader_t* readerP);
+
+/*
+    Расширяет массив lnEnds
+    params:
+        lnEnds - указатель на массив с индексами символов концов строк в тексте
+        newSize - новый размер массива
+    return:
+        Указатель на увеличенный массив
+
+*/
+static size_t* ExpandLnEnds(size_t* lnEnds, size_t newSize);
+
+/*
+    Вычисляет длину самой большой строки, записанной в ридер
+    params:
+        readerP - указатель на структуру с содержимым файла
+    return:
+        Длина самой большой строки
+*/
 static size_t GetMaxStrLen(reader_t* readerP);
+
+/*
+    Освобождает память, выделенную на массив концов строк
+    params:
+        lnEnds - указатель на массив концов строк
+*/
 static void ClearLnEnds(size_t* lnEnds);
+
+/*
+    Освобождает память, выделенную под буффер (текст из файла)
+    params:
+        buffer - указатель на буффер (текст)
+*/
 static void ClearBuffer(char* buffer);
+
 
 void WriteFileInReader(reader_t* readerP, char* filename) {
     FILE* filePointer = OpenFileMy(filename);
