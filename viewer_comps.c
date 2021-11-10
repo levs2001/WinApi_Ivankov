@@ -41,6 +41,11 @@ static size_t CountPrLines(viewer_t* viewerP);
 */
 static void PrintTextInViewer(viewer_t* viewerP, HDC hdc);
 
+// TODO (levs2#1#): Добавить реализацию этой функции
+void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
+    //long zDelta = -GET_WHEEL_DELTA_WPARAM(wParam) / 120;
+}
+
 void ProcessVscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     int newSysPos = POS_NOT_STATED;
 

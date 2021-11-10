@@ -77,7 +77,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     return messages.wParam;
 }
 
-
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT paintStruct;
     static viewer_t viewerStatic;
@@ -102,6 +101,10 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     break;
     case WM_HSCROLL: {
         ProcessHscrollViewer(&viewerStatic, hwnd, wParam);
+    }
+    break;
+    case WM_MOUSEWHEEL: {
+        ProcessMouseWheel(&viewerStatic, hwnd, wParam);
     }
     break;
     case WM_PAINT: {

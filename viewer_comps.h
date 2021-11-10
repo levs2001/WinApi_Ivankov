@@ -64,6 +64,9 @@ void ShowViewer(viewer_t* viewerP, HDC hdc);
 */
 void ResizeViewer(viewer_t* viewerP, HWND hwnd);
 
+// TODO (levs2#1#): Добавить комментарий к этой функции
+void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
+
 /*
     Обрабатывает вертикальный скроллинг
     params:
