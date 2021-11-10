@@ -14,12 +14,13 @@ typedef struct {
     size_t hScrollPos;
     size_t vScrollMax;
     size_t hScrollMax;
-    HDC hdc;
+//    HDC hdc;
 }winParams_t;
 
-void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP);
-void SetWindowSize(winParams_t* winParamsP, HWND hwnd);
-winParams_t* GetWinParams(myFont_t* myFontP, HWND hwnd);
+//void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP);
+//void SetWindowSize(winParams_t* winParamsP, HWND hwnd);
+winParams_t* InitWinParams(HWND hwnd, myFont_t* myFontP);
+void ResizeWinParams(winParams_t* winParamsP, HWND hwnd, myFont_t* myFontP);
 void ClearWinParams(winParams_t* winParamsP);
 BOOL OpenFileDlg(HWND hwnd, PTCHAR name);
 

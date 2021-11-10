@@ -1,7 +1,8 @@
 #include"win_comps.h"
 #include"exceptions.h"
 #include"memory.h"
-void CountWinSizesInSyms(myFont_t* myFontP, winParams_t* winParamsP) {
+
+static void CountWinSizesInSyms(winParams_t* winParamsP, myFont_t* myFontP) {
     winParamsP->widthInSyms = (winParamsP->width) / myFontP->width;
     winParamsP->heightInSyms = (winParamsP->height) / myFontP->height;
 }
@@ -13,13 +14,18 @@ void SetWindowSize(winParams_t* winParamsP, HWND hwnd) {
     winParamsP->width = winRect.right - winRect.left;
 }
 
-winParams_t* GetWinParams(myFont_t* myFontP, HWND hwnd) {
-    winParams_t* winParamsP = (winParams_t*)getMem(sizeof(winParams_t), "winParams");
-    winParamsP->hdc = GetDC(hwnd);
+void ResizeWinParams(winParams_t* winParamsP, HWND hwnd, myFont_t* myFontP) {
+    SetWindowSize(winParamsP, hwnd);
+    CountWinSizesInSyms(winParamsP, myFontP);
+}
 
+winParams_t* InitWinParams(HWND hwnd, myFont_t* myFontP) {
+    winParams_t* winParamsP = (winParams_t*)getMem(sizeof(winParams_t), "winParams");
+    ResizeWinParams(winParamsP, hwnd, myFontP);
     winParamsP->vScrollPos = 0;
     winParamsP->hScrollPos = 0;
-
+    winParamsP->vScrollMax = 0;
+    winParamsP->hScrollMax = 0;
     return winParamsP;
 }
 

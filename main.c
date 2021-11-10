@@ -106,7 +106,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     break;
     case WM_PAINT: {
         BeginPaint(hwnd, &paintStruct);
-        ShowViewer(&viewerStatic);
+        ShowViewer(&viewerStatic, GetDC(hwnd));
         EndPaint(hwnd, &paintStruct);
     }
     break;

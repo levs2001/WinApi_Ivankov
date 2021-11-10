@@ -8,33 +8,54 @@
 #include"memory.h"
 #include "scrolling.h"
 
-#define WINDOW_MIN_X 0
-#define SCROLL_RANGE_MAX 65535
+/*Ёта константа используетс€ при скроллинге.
+ѕри THUMBTRACK и THUMBPOSITION мы переходим от системной позиции скроллинга к нашей,
+в остальных случа€х наоборот. ”добно узнавать какой случай, провер€€ определена ли уже системна€ позици€
+и в зависимости от этого отображать (от системного к нашему или наоборот).*/
 #define POS_NOT_STATED -1
 
-static int CountPrLines(viewer_t* viewerP);
-static void ResizeHscrollParams(viewer_t* viewerP);
-static void ResizeVscrollParams(viewer_t* viewerP);
-static void PrintTextInViewer(viewer_t* viewerP);
-static size_t GetScrollPosMyFromSystem(size_t myScrollMax, int sysScrPos);
-static int GetScrollPosSystemFromMy(size_t myScrollMax, size_t myScrPos);
-// TODO divide to files and divide statics that now isn't signed as static
+/*
+    ‘ункци€ мен€ет firstPrI (индекс первого символа из буффера, который будет выведен в окно)
+    и lastPrI (индекс последнего) в viewer.
+    params:
+        viewerP - указатель на viewer
+*/
+static void SetPrintedBuffIndexes(viewer_t* viewerP);
+
+/*
+    ‘ункци€ считает количество строк, которое может быть выведено (при Wrap On это число больше, ведь включен перенос)
+    ќна учитывает даже строки, которые реально не вывод€тс€, ведь их положение за пределами окна.
+    «начение из этой функции в том числе используетс€ дл€ определени€ range у вертикального скроллинга.
+    params:
+        viewerP - указатель на viewer
+    return:
+        количество строк
+*/
+static size_t CountPrLines(viewer_t* viewerP);
+
+/*
+    ¬ыводит текст файла, который до этого открыли и записали во viewer, в окно
+    params:
+        viewerP - указатель на viewer
+        hdc - дескриптор окна, в которое происходит вывод
+*/
+static void PrintTextInViewer(viewer_t* viewerP, HDC hdc);
 
 void ProcessVscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     int newSysPos = POS_NOT_STATED;
 
     switch(LOWORD(wParam)) {
     case SB_LINEUP:
-        ScrollVertLineUpViewer(viewerP);
+        ScrollVertLineUpViewer(viewerP->winParamsP);
         break;
     case SB_LINEDOWN:
-        ScrollVertLineDownViewer(viewerP);
+        ScrollVertLineDownViewer(viewerP->winParamsP);
         break;
     case SB_PAGEUP:
-        ScrollVertPageUpViewer(viewerP);
+        ScrollVertPageUpViewer(viewerP->winParamsP);
         break;
     case SB_PAGEDOWN:
-        ScrollVertPageDownViewer(viewerP);
+        ScrollVertPageDownViewer(viewerP->winParamsP);
         break;
     case SB_THUMBTRACK:
         newSysPos = HIWORD(wParam);
@@ -60,16 +81,20 @@ void ProcessHscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
 
     switch(LOWORD(wParam)) {
     case SB_LINEUP:
-        ScrollHorzLineUpViewer(viewerP);
+        ScrollHorzLineUpViewer(viewerP->winParamsP, viewerP->isHorzScroll);
         break;
     case SB_LINEDOWN:
-        ScrollHorzLineDownViewer(viewerP);
+        ScrollHorzLineDownViewer(viewerP->winParamsP, viewerP->isHorzScroll);
         break;
     case SB_PAGEUP:
-        ScrollHorzPageUpViewer(viewerP);
+        ScrollHorzPageUpViewer(viewerP->winParamsP, viewerP->isHorzScroll);
         break;
     case SB_PAGEDOWN:
-        ScrollHorzPageDownViewer(viewerP);
+        ScrollHorzPageDownViewer(viewerP->winParamsP, viewerP->isHorzScroll);
+        break;
+    case SB_THUMBTRACK:
+        newSysPos = HIWORD(wParam);
+        viewerP->winParamsP->hScrollPos = GetScrollPosMyFromSystem(viewerP->winParamsP->hScrollMax, newSysPos);
         break;
     case SB_THUMBPOSITION:
         newSysPos = HIWORD(wParam);
@@ -91,22 +116,22 @@ void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
 
     switch (wParam) {
     case VK_UP:
-        ScrollVertLineUpViewer(viewerP);
+        ScrollVertLineUpViewer(viewerP->winParamsP);
         break;
     case VK_DOWN:
-        ScrollVertLineDownViewer(viewerP);
+        ScrollVertLineDownViewer(viewerP->winParamsP);
         break;
     case VK_PRIOR: //Page up key
-        ScrollVertPageUpViewer(viewerP);
+        ScrollVertPageUpViewer(viewerP->winParamsP);
         break;
     case VK_NEXT: //Page down key
-        ScrollVertPageDownViewer(viewerP);
+        ScrollVertPageDownViewer(viewerP->winParamsP);
         break;
     case VK_LEFT:
-        ScrollHorzLineUpViewer(viewerP);
+        ScrollHorzLineUpViewer(viewerP->winParamsP, viewerP->isHorzScroll);
         break;
     case VK_RIGHT:
-        ScrollHorzLineDownViewer(viewerP);
+        ScrollHorzLineDownViewer(viewerP->winParamsP, viewerP->isHorzScroll);
         break;
     }
 
@@ -124,58 +149,70 @@ void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     }
 }
 
-static size_t GetScrollPosMyFromSystem(size_t myScrollMax, int sysScrPos) {
-    size_t myScrPos = sysScrPos;
-    if(myScrollMax > SCROLL_RANGE_MAX) {
-        myScrPos = (size_t)((double)sysScrPos / (double)SCROLL_RANGE_MAX * myScrollMax);
-    }
-
-    return myScrPos;
-}
-
-static int GetScrollPosSystemFromMy(size_t myScrollMax, size_t myScrPos) {
-    size_t sysScrPos = myScrPos;
-    if(myScrollMax > SCROLL_RANGE_MAX) {
-        sysScrPos = (size_t)((double)sysScrPos / myScrollMax * SCROLL_RANGE_MAX);
-    }
-
-    return (int)sysScrPos;
-}
-
-static void ResizeVscrollParams(viewer_t* viewerP) {
-    long prLinesCount = CountPrLines(viewerP);
-    size_t oldVertMax = viewerP->winParamsP->vScrollMax;
-
-    if((long)(prLinesCount - viewerP->winParamsP->heightInSyms) >= 0) {
-        viewerP->winParamsP->vScrollMax = prLinesCount - viewerP->winParamsP->heightInSyms;
-        viewerP->winParamsP->vScrollPos = viewerP->winParamsP->vScrollPos * ((double)viewerP->winParamsP->vScrollMax / (oldVertMax > 0 ? oldVertMax : 1));
-    } else {
-        viewerP->winParamsP->vScrollMax = 0;
-    }
-}
-
-static void ResizeHscrollParams(viewer_t* viewerP) {
-    size_t oldHorzMax = viewerP->winParamsP->hScrollMax;
-
-    if(viewerP->isHorzScroll && viewerP->readerP->maxStrLen > viewerP->winParamsP->widthInSyms) {
-        viewerP->winParamsP->hScrollMax = viewerP->readerP->maxStrLen - viewerP->winParamsP->widthInSyms;
-        viewerP->winParamsP->hScrollPos = viewerP->winParamsP->hScrollPos * ((double)viewerP->winParamsP->hScrollMax / (oldHorzMax > 0 ? oldHorzMax : 1));
-    } else {
-        viewerP->winParamsP->hScrollMax = 0;
-    }
-}
-
 void ResizeViewer(viewer_t* viewerP, HWND hwnd) {
-    SetWindowSize(viewerP->winParamsP, hwnd);
-    CountWinSizesInSyms(viewerP->fontP, viewerP->winParamsP);
-    ResizeVscrollParams(viewerP);
-    ResizeHscrollParams(viewerP);
+    ResizeWinParams(viewerP->winParamsP, hwnd, viewerP->fontP);
+    ResizeVscrollParams(viewerP->winParamsP, CountPrLines(viewerP));
+    ResizeHscrollParams(viewerP->winParamsP, viewerP->readerP->maxStrLen, viewerP->isHorzScroll);
     SetScrollRange(hwnd, SB_VERT, 0, viewerP->winParamsP->vScrollMax < SCROLL_RANGE_MAX ? viewerP->winParamsP->vScrollMax : SCROLL_RANGE_MAX, FALSE);
     SetScrollRange(hwnd, SB_HORZ, 0, viewerP->winParamsP->hScrollMax < SCROLL_RANGE_MAX ? viewerP->winParamsP->hScrollMax : SCROLL_RANGE_MAX, FALSE);
     SetPrintedBuffIndexes(viewerP);
 }
 
-void SetPrintedBuffIndexes(viewer_t* viewerP) {
+void InitViewer(viewer_t* viewerP, HWND hwnd) {
+    viewerP->readerP = (reader_t*)getMem(sizeof(reader_t), "reader");
+
+    NullifyReader(viewerP->readerP);
+    viewerP->firstPrSymI = 0;
+    viewerP->lastPrSymI = 0;
+
+    viewerP->fontP = CreateDefaultFont();
+    viewerP->winParamsP = InitWinParams(hwnd, viewerP->fontP);
+
+    SelectFont(GetDC(hwnd), viewerP->fontP);
+    viewerP->isHorzScroll = HORZ_SCROLL_DEFAULT;
+}
+
+void SendFileInViewer(viewer_t* viewerP, char* filename) {
+    WriteFileInReader(viewerP->readerP, filename);
+}
+
+void CloseFileInViewer(viewer_t* viewerP) {
+    EmptyReader(viewerP->readerP);
+    viewerP->firstPrSymI = 0;
+    viewerP->lastPrSymI = 0;
+    viewerP->winParamsP->hScrollPos = 0;
+    viewerP->winParamsP->vScrollPos = 0;
+    viewerP->winParamsP->hScrollMax = 0;
+    viewerP->winParamsP->vScrollMax = 0;
+}
+
+void ShowViewer(viewer_t* viewerP, HDC hdc) {
+    PrintTextInViewer(viewerP, hdc);
+}
+
+void WrapOnViewer(viewer_t* viewerP) {
+    viewerP->isHorzScroll = false;
+    viewerP->winParamsP->vScrollPos = 0;
+    viewerP->winParamsP->vScrollPos = 0;
+}
+
+void WrapOffViewer(viewer_t* viewerP) {
+    viewerP->isHorzScroll = true;
+    viewerP->winParamsP->vScrollPos = 0;
+    viewerP->winParamsP->vScrollPos = 0;
+}
+
+void ClearViewer(viewer_t* viewerStaticP) {
+    if(viewerStaticP == NULL) {
+        Exception(NULL_VIEWER_POINTER);
+    }
+
+    ClearReader(viewerStaticP->readerP);
+    ClearWinParams(viewerStaticP->winParamsP);
+    ClearFont(viewerStaticP->fontP);
+}
+
+static void SetPrintedBuffIndexes(viewer_t* viewerP) {
     winParams_t* winParamsP = viewerP->winParamsP;
     reader_t* readerP = viewerP->readerP;
 
@@ -212,49 +249,7 @@ void SetPrintedBuffIndexes(viewer_t* viewerP) {
     viewerP->lastPrSymI = lastPrI;
 }
 
-void InitViewer(viewer_t* viewerP, HWND hwnd) {
-    viewerP->readerP = (reader_t*)getMem(sizeof(reader_t), "reader");
-
-    NullifyReader(viewerP->readerP);
-    viewerP->firstPrSymI = 0;
-    viewerP->lastPrSymI = 0;
-
-    viewerP->fontP = CreateDefaultFont();
-    viewerP->winParamsP = GetWinParams(viewerP->fontP, hwnd);
-
-    SelectFont(viewerP->winParamsP->hdc, viewerP->fontP);
-    viewerP->isHorzScroll = HORZ_SCROLL_DEFAULT;
-}
-
-void SendFileInViewer(viewer_t* viewerP, char* filename) {
-    WriteFileInReader(viewerP->readerP, filename);
-}
-
-void CloseFileInViewer(viewer_t* viewerP) {
-    EmptyReader(viewerP->readerP);
-    viewerP->firstPrSymI = 0;
-    viewerP->lastPrSymI = 0;
-    viewerP->winParamsP->hScrollPos = 0;
-    viewerP->winParamsP->vScrollPos = 0;
-    viewerP->winParamsP->hScrollMax = 0;
-    viewerP->winParamsP->vScrollMax = 0;
-}
-
-void ShowViewer(viewer_t* viewerP) {
-    PrintTextInViewer(viewerP);
-}
-
-void ClearViewer(viewer_t* viewerStaticP) {
-    if(viewerStaticP == NULL) {
-        Exception(NULL_VIEWER_POINTER);
-    }
-
-    ClearReader(viewerStaticP->readerP);
-    ClearWinParams(viewerStaticP->winParamsP);
-    ClearFont(viewerStaticP->fontP);
-}
-
-static int CountPrLines(viewer_t* viewerP) {
+static size_t CountPrLines(viewer_t* viewerP) {
     size_t prLinesCount = 0;
     size_t collectedSymsN  = 0;
 
@@ -274,7 +269,7 @@ static int CountPrLines(viewer_t* viewerP) {
     return prLinesCount;
 }
 
-static void PrintTextInViewer(viewer_t* viewerP) {
+static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
     size_t collectedPrSym = 0;
     size_t yPrPos = 0;
     size_t curWidth = - viewerP->winParamsP->hScrollPos * viewerP->fontP->width;
@@ -282,7 +277,7 @@ static void PrintTextInViewer(viewer_t* viewerP) {
     for(size_t i = viewerP->firstPrSymI; i < viewerP->lastPrSymI; i++) {
         if(viewerP->readerP->buffer[i] == '\n'
                 || (collectedPrSym >= viewerP->winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
-            TextOut(viewerP->winParamsP->hdc, curWidth, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
+            TextOut(hdc, curWidth, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
             yPrPos += viewerP->fontP->height;
             collectedPrSym = 0;
         }
@@ -290,18 +285,6 @@ static void PrintTextInViewer(viewer_t* viewerP) {
     }
 
     if(collectedPrSym > 0) {
-        TextOut(viewerP->winParamsP->hdc, curWidth, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
+        TextOut(hdc, curWidth, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
     }
-}
-
-void WrapOnViewer(viewer_t* viewerP) {
-    viewerP->isHorzScroll = false;
-    viewerP->winParamsP->vScrollPos = 0;
-    viewerP->winParamsP->vScrollPos = 0;
-}
-
-void WrapOffViewer(viewer_t* viewerP) {
-    viewerP->isHorzScroll = true;
-    viewerP->winParamsP->vScrollPos = 0;
-    viewerP->winParamsP->vScrollPos = 0;
 }
