@@ -118,4 +118,12 @@ size_t GetScrollPosMyFromSystem(size_t myScrollMax, int sysScrPos);
         системная позиция скроллинга
 */
 int GetScrollPosSystemFromMy(size_t myScrollMax, size_t myScrPos);
+
+/*
+    Меняет значение параметра отвечающего за вертикальный скроллинг, если это возможно
+    params:
+        winParamsP - указатель на мою структуру с параметрами окна
+        delta - величина на которую надо поменять позицию вертикального скроллинга
+*/
+void ChangeVScrollPos(winParams_t* winParamsP, long delta);
 #endif

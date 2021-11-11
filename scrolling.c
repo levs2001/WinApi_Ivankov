@@ -24,32 +24,37 @@ void ResizeHscrollParams(winParams_t* winParamsP, size_t maxStrLen, bool isHorzS
     }
 }
 
-void ScrollVertLineUpViewer(winParams_t* winParamsP) {
-    if(winParamsP->vScrollPos > 0) {
-        winParamsP->vScrollPos -= 1;
+void ChangeVScrollPos(winParams_t* winParamsP, long delta) {
+    if(delta > 0) {
+        if(winParamsP->vScrollPos + delta > winParamsP->vScrollMax) {
+            winParamsP->vScrollPos = winParamsP->vScrollMax;
+            return;
+        }
     }
+    else {
+        if((long)winParamsP->vScrollPos + delta < 0) {
+            winParamsP->vScrollPos = 0;
+            return;
+        }
+    }
+
+    winParamsP->vScrollPos += delta;
+}
+
+void ScrollVertLineUpViewer(winParams_t* winParamsP) {
+    ChangeVScrollPos(winParamsP, -1);
 }
 
 void ScrollVertLineDownViewer(winParams_t* winParamsP) {
-    if(winParamsP->vScrollPos < winParamsP->vScrollMax) {
-        winParamsP->vScrollPos += 1;
-    }
+    ChangeVScrollPos(winParamsP, 1);
 }
 
 void ScrollVertPageUpViewer(winParams_t* winParamsP) {
-    if(winParamsP->vScrollPos > winParamsP->heightInSyms) {
-        winParamsP->vScrollPos -= winParamsP->heightInSyms;
-    } else {
-        winParamsP->vScrollPos = 0;
-    }
+    ChangeVScrollPos(winParamsP, -winParamsP->heightInSyms);
 }
 
 void ScrollVertPageDownViewer(winParams_t* winParamsP) {
-    if(winParamsP->vScrollPos + winParamsP->heightInSyms < winParamsP->vScrollMax) {
-        winParamsP->vScrollPos += winParamsP->heightInSyms;
-    } else {
-        winParamsP->vScrollPos = winParamsP->vScrollMax;
-    }
+    ChangeVScrollPos(winParamsP, winParamsP->heightInSyms);
 }
 
 void ScrollHorzLineUpViewer(winParams_t* winParamsP, bool isHorzScroll) {

@@ -41,13 +41,23 @@ static size_t CountPrLines(viewer_t* viewerP);
 */
 static void PrintTextInViewer(viewer_t* viewerP, HDC hdc);
 
-// TODO (levs2#1#): Добавить реализацию этой функции
 void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
-    //long zDelta = -GET_WHEEL_DELTA_WPARAM(wParam) / 120;
+    size_t myOldVscrollPos = viewerP->winParamsP->vScrollPos;
+
+    long delta = -GET_WHEEL_DELTA_WPARAM(wParam) / 120;
+    ChangeVScrollPos(viewerP->winParamsP, delta);
+
+    if(viewerP->winParamsP->vScrollPos != myOldVscrollPos) {
+        int newSysPos = GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos);
+        SetScrollPos(hwnd, SB_VERT, newSysPos, TRUE);
+        SetPrintedBuffIndexes(viewerP);
+        InvalidateRect(hwnd, NULL, TRUE);
+    }
 }
 
 void ProcessVscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     int newSysPos = POS_NOT_STATED;
+    size_t myOldVScrollPos = viewerP->winParamsP->vScrollPos;
 
     switch(LOWORD(wParam)) {
     case SB_LINEUP:
@@ -72,17 +82,20 @@ void ProcessVscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
         break;
     }
 
-    if(newSysPos == POS_NOT_STATED) {
-        newSysPos = GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos);
-    }
+    if(viewerP->winParamsP->vScrollPos != myOldVScrollPos) {
+        if(newSysPos == POS_NOT_STATED) {
+            newSysPos = GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos);
+        }
 
-    SetScrollPos(hwnd, SB_VERT, newSysPos, TRUE);
-    SetPrintedBuffIndexes(viewerP);
-    InvalidateRect(hwnd, NULL, TRUE);
+        SetScrollPos(hwnd, SB_VERT, newSysPos, TRUE);
+        SetPrintedBuffIndexes(viewerP);
+        InvalidateRect(hwnd, NULL, TRUE);
+    }
 }
 
 void ProcessHscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     int newSysPos = POS_NOT_STATED;
+    size_t myOldHScrollPos = viewerP->winParamsP->hScrollPos;
 
     switch(LOWORD(wParam)) {
     case SB_LINEUP:
@@ -107,17 +120,22 @@ void ProcessHscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
         break;
     }
 
-    if(newSysPos == POS_NOT_STATED) {
-        newSysPos = GetScrollPosSystemFromMy(viewerP->winParamsP->hScrollMax, viewerP->winParamsP->hScrollPos);
-    }
+    if(viewerP->winParamsP->hScrollPos != myOldHScrollPos) {
+        if(newSysPos == POS_NOT_STATED) {
+            newSysPos = GetScrollPosSystemFromMy(viewerP->winParamsP->hScrollMax, viewerP->winParamsP->hScrollPos);
+        }
 
-    SetScrollPos(hwnd, SB_HORZ, newSysPos, TRUE);
-    InvalidateRect(hwnd, NULL, TRUE);
+        SetScrollPos(hwnd, SB_HORZ, newSysPos, TRUE);
+        InvalidateRect(hwnd, NULL, TRUE);
+    }
 }
 
 void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     int newSysVpos = POS_NOT_STATED;
     int newSysHpos = POS_NOT_STATED;
+
+    size_t myOldVScrollPos = viewerP->winParamsP->vScrollPos;
+    size_t myOldHScrollPos = viewerP->winParamsP->hScrollPos;
 
     switch (wParam) {
     case VK_UP:
@@ -140,16 +158,17 @@ void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
         break;
     }
 
-    newSysVpos = GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos);
-    if (newSysVpos  != GetScrollPos(hwnd, SB_VERT)) {
+    if(viewerP->winParamsP->vScrollPos != myOldVScrollPos) {
+        newSysVpos = GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos);
         SetScrollPos(hwnd, SB_VERT, newSysVpos, TRUE);
         SetPrintedBuffIndexes(viewerP);
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
-    newSysHpos = GetScrollPosSystemFromMy(viewerP->winParamsP->hScrollMax, viewerP->winParamsP->hScrollPos);
-    if (newSysHpos  != GetScrollPos(hwnd, SB_HORZ)) {
+    if(viewerP->winParamsP->hScrollPos != myOldHScrollPos) {
+        newSysHpos = GetScrollPosSystemFromMy(viewerP->winParamsP->hScrollMax, viewerP->winParamsP->hScrollPos);
         SetScrollPos(hwnd, SB_HORZ, newSysHpos, TRUE);
+        SetPrintedBuffIndexes(viewerP);
         InvalidateRect(hwnd, NULL, TRUE);
     }
 }

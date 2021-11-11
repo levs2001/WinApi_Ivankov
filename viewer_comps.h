@@ -64,7 +64,13 @@ void ShowViewer(viewer_t* viewerP, HDC hdc);
 */
 void ResizeViewer(viewer_t* viewerP, HWND hwnd);
 
-// TODO (levs2#1#): ƒобавить комментарий к этой функции
+/*
+    ќбрабатывает кручение колесика мыши пользователем
+    params:
+        viewerP - указатель на viewer
+        hwnd - указатель на окно, где мы отображаем viewer
+        wParam - параметр использумый дл€ определени€ на сколько крутанули колесико
+*/
 void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
 
 /*
