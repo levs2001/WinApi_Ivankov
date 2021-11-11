@@ -247,7 +247,7 @@ static void SetPrintedBuffIndexes(viewer_t* viewerP) {
     long shift = winParamsP->vScrollPos;
 
     for(; firstPrI < readerP->bufferSize && shift > 0; firstPrI++) {
-        if(readerP->buffer[firstPrI] == '\n'
+        if(readerP->buffer[firstPrI] == LINE_END
                 || (collectedSymsN >= winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
             collectedSymsN = 0;
             shift--;
@@ -261,7 +261,7 @@ static void SetPrintedBuffIndexes(viewer_t* viewerP) {
     collectedSymsN = 0;
 
     for(lastPrI = firstPrI; (long)lastPrI < (long)readerP->bufferSize && shift > 0; lastPrI++) {
-        if(readerP->buffer[lastPrI] == '\n'
+        if(readerP->buffer[lastPrI] == LINE_END
                 || (collectedSymsN >= winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
             collectedSymsN = 0;
             shift--;
@@ -278,7 +278,7 @@ static size_t CountPrLines(viewer_t* viewerP) {
     size_t collectedSymsN  = 0;
 
     for(long i = 0; i < viewerP->readerP->bufferSize; i++) {
-        if(viewerP->readerP->buffer[i] == '\n'
+        if(viewerP->readerP->buffer[i] == LINE_END
                 || (collectedSymsN >= viewerP->winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
             collectedSymsN = 0;
             prLinesCount++;
@@ -299,7 +299,7 @@ static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
     size_t curWidth = - viewerP->winParamsP->hScrollPos * viewerP->fontP->width;
 
     for(size_t i = viewerP->firstPrSymI; i < viewerP->lastPrSymI; i++) {
-        if(viewerP->readerP->buffer[i] == '\n'
+        if(viewerP->readerP->buffer[i] == LINE_END
                 || (collectedPrSym >= viewerP->winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
             TextOut(hdc, curWidth, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
             yPrPos += viewerP->fontP->height;

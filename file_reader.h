@@ -3,6 +3,8 @@
 
 #include<stdio.h>
 
+#define LINE_END '\n'
+
 // Структура с информацией о тексте, находящейся во viewer
 typedef struct {
     // Указатель на массив с содержимым текста

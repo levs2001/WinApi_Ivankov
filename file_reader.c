@@ -3,7 +3,7 @@
 #include "memory.h"
 #include <stdlib.h>
 
-#define LINE_END "\n"
+
 // На сколько расширяем массив концов строк
 #define REALLOC_NUM 10
 
