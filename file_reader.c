@@ -151,7 +151,7 @@ static void InitLnEnds(reader_t* readerP) {
     size_t* lnEnds = (size_t*)getMem(sizeof(size_t) * lnEndsGivenSize, "lnEnds");
 
     for(size_t i = 0; i < readerP->bufferSize; i++) {
-        if(readerP->buffer[i] == '\n') {
+        if(readerP->buffer[i] == LINE_END) {
             if(lnEndsSize >= lnEndsGivenSize - 1) {
                 lnEndsGivenSize += REALLOC_NUM;
                 lnEnds = ExpandLnEnds(lnEnds, lnEndsGivenSize*sizeof(size_t));

@@ -39,7 +39,15 @@ static size_t CountPrLines(viewer_t* viewerP);
         viewerP - указатель на viewer
         hdc - дескриптор окна, в которое происходит вывод
 */
-static void PrintTextInViewer(viewer_t* viewerP, HDC hdc);
+static void PrintWrappedTextInViewer(viewer_t* viewerP, HDC hdc);
+
+/*
+    Выводит текст файла, который до этого открыли и записали во viewer, в окно
+    params:
+        viewerP - указатель на viewer
+        hdc - дескриптор окна, в которое происходит вывод
+*/
+static void PrintUnwrappedTextInViewer(viewer_t* viewerP, HDC hdc);
 
 void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     size_t myOldVscrollPos = viewerP->winParamsP->vScrollPos;
@@ -211,7 +219,11 @@ void CloseFileInViewer(viewer_t* viewerP) {
 }
 
 void ShowViewer(viewer_t* viewerP, HDC hdc) {
-    PrintTextInViewer(viewerP, hdc);
+    if(viewerP->isHorzScroll) {
+        PrintUnwrappedTextInViewer(viewerP, hdc);
+    } else {
+        PrintWrappedTextInViewer(viewerP, hdc);
+    }
 }
 
 void WrapOnViewer(viewer_t* viewerP) {
@@ -293,15 +305,14 @@ static size_t CountPrLines(viewer_t* viewerP) {
     return prLinesCount;
 }
 
-static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
+static void PrintWrappedTextInViewer(viewer_t* viewerP, HDC hdc) {
     size_t collectedPrSym = 0;
     size_t yPrPos = 0;
-    size_t curShift = -viewerP->winParamsP->hScrollPos * viewerP->fontP->width;
 
     for(size_t i = viewerP->firstPrSymI; i < viewerP->lastPrSymI; i++) {
         if(viewerP->readerP->buffer[i] == LINE_END
-                || (collectedPrSym >= viewerP->winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
-            TextOut(hdc, curShift, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
+                || collectedPrSym >= viewerP->winParamsP->widthInSyms) {
+            TextOut(hdc, MIN_X, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
             yPrPos += viewerP->fontP->height;
             collectedPrSym = 0;
         }
@@ -309,6 +320,33 @@ static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
     }
 
     if(collectedPrSym > 0) {
-        TextOut(hdc, curShift, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
+        TextOut(hdc, MIN_X, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
     }
 }
+
+static void PrintUnwrappedTextInViewer(viewer_t* viewerP, HDC hdc) {
+    size_t collectedPrSym = 0;
+    size_t yPrPos = 0;
+    size_t hScrPos = viewerP->winParamsP->hScrollPos;
+    size_t lnEndsInd = 0;
+
+    for(size_t i = viewerP->firstPrSymI + hScrPos; i < viewerP->lastPrSymI; i++) {
+        if(viewerP->readerP->buffer[i] == LINE_END
+                || collectedPrSym >= viewerP->winParamsP->widthInSyms) {
+            TextOut(hdc, MIN_X, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
+            yPrPos += viewerP->fontP->height;
+            collectedPrSym = 0;
+
+            //Перескакиваем сразу к следующему переносу строки, нам не нужно выводить остаток за окно
+            if(lnEndsInd < viewerP->readerP->lnEndsSize) {
+                i = viewerP->readerP->lnEnds[lnEndsInd++] + hScrPos;
+            }
+        }
+        collectedPrSym++;
+    }
+
+    if(collectedPrSym > hScrPos) {
+        TextOut(hdc, MIN_X, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym + hScrPos, collectedPrSym - hScrPos);
+    }
+}
+

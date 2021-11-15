@@ -5,6 +5,8 @@
 #include<windows.h>
 #include"text_comps.h"
 
+#define MIN_X 0
+
 // Структура, хранящая параметры окна
 typedef struct {
     // Ширина окна
