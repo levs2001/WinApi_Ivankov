@@ -217,13 +217,13 @@ void ShowViewer(viewer_t* viewerP, HDC hdc) {
 void WrapOnViewer(viewer_t* viewerP) {
     viewerP->isHorzScroll = false;
     viewerP->winParamsP->vScrollPos = 0;
-    viewerP->winParamsP->vScrollPos = 0;
+    viewerP->winParamsP->hScrollPos = 0;
 }
 
 void WrapOffViewer(viewer_t* viewerP) {
     viewerP->isHorzScroll = true;
     viewerP->winParamsP->vScrollPos = 0;
-    viewerP->winParamsP->vScrollPos = 0;
+    viewerP->winParamsP->hScrollPos = 0;
 }
 
 void ClearViewer(viewer_t* viewerStaticP) {
@@ -296,12 +296,12 @@ static size_t CountPrLines(viewer_t* viewerP) {
 static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
     size_t collectedPrSym = 0;
     size_t yPrPos = 0;
-    size_t curWidth = - viewerP->winParamsP->hScrollPos * viewerP->fontP->width;
+    size_t curShift = -viewerP->winParamsP->hScrollPos * viewerP->fontP->width;
 
     for(size_t i = viewerP->firstPrSymI; i < viewerP->lastPrSymI; i++) {
         if(viewerP->readerP->buffer[i] == LINE_END
                 || (collectedPrSym >= viewerP->winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
-            TextOut(hdc, curWidth, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
+            TextOut(hdc, curShift, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
             yPrPos += viewerP->fontP->height;
             collectedPrSym = 0;
         }
@@ -309,6 +309,6 @@ static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
     }
 
     if(collectedPrSym > 0) {
-        TextOut(hdc, curWidth, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
+        TextOut(hdc, curShift, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
     }
 }

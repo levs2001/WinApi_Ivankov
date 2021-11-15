@@ -50,7 +50,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     hwnd = CreateWindowEx (
                0,                   /* Extended possibilites for variation */
                szClassName,         /* Classname */
-               _T("Code::Blocks Template Windows App"),       /* Title Text */
+               szClassName,       /* Title Text */
                WS_OVERLAPPEDWINDOW | WS_VSCROLL | WS_HSCROLL, /* default window */
                CW_USEDEFAULT,       /* Windows decides the position */
                CW_USEDEFAULT,       /* where the window ends up on the screen */
