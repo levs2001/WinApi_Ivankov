@@ -293,22 +293,39 @@ static size_t CountPrLines(viewer_t* viewerP) {
     return prLinesCount;
 }
 
+static size_t GetSymsCountToPrintInStr(size_t collectedPrSym, size_t hScrollPos, size_t winWidthInSyms) {
+    size_t countToPr = collectedPrSym > hScrollPos ? collectedPrSym - hScrollPos : 0;
+    countToPr = countToPr < winWidthInSyms ? countToPr : winWidthInSyms;
+
+    return countToPr;
+}
+
 static void PrintTextInViewer(viewer_t* viewerP, HDC hdc) {
     size_t collectedPrSym = 0;
     size_t yPrPos = 0;
-    size_t curShift = -viewerP->winParamsP->hScrollPos * viewerP->fontP->width;
+    size_t beginPrPos = 0;
+    size_t countToPr = 0;
 
     for(size_t i = viewerP->firstPrSymI; i < viewerP->lastPrSymI; i++) {
         if(viewerP->readerP->buffer[i] == LINE_END
                 || (collectedPrSym >= viewerP->winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
-            TextOut(hdc, curShift, yPrPos, viewerP->readerP->buffer + i - collectedPrSym, collectedPrSym);
+            beginPrPos = i - collectedPrSym + viewerP->winParamsP->hScrollPos;
+            countToPr = GetSymsCountToPrintInStr(collectedPrSym, viewerP->winParamsP->hScrollPos, viewerP->winParamsP->widthInSyms);
+
+            TextOut(hdc, MIN_X, yPrPos, viewerP->readerP->buffer + beginPrPos, countToPr);
             yPrPos += viewerP->fontP->height;
             collectedPrSym = 0;
         }
-        collectedPrSym++;
+
+        //Игнорируем переносы строк, они не должны попадать в вывод
+        if(viewerP->readerP->buffer[i] != LINE_END) {
+            collectedPrSym++;
+        }
     }
 
     if(collectedPrSym > 0) {
-        TextOut(hdc, curShift, yPrPos, viewerP->readerP->buffer + viewerP->lastPrSymI - collectedPrSym, collectedPrSym);
+        beginPrPos = viewerP->lastPrSymI - collectedPrSym + viewerP->winParamsP->hScrollPos;
+        countToPr = GetSymsCountToPrintInStr(collectedPrSym, viewerP->winParamsP->hScrollPos, viewerP->winParamsP->widthInSyms);
+        TextOut(hdc, MIN_X, yPrPos, viewerP->readerP->buffer + beginPrPos, countToPr);
     }
 }
