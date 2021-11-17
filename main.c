@@ -79,6 +79,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT paintStruct;
+
+    // Структура вьювера, до конца своей жизни приложение работает с ней
     static viewer_t viewerStatic;
 
     switch (message) {                /* handle the messages */
@@ -121,9 +123,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     case WM_COMMAND: {
         switch(LOWORD(wParam)) {
         case IDM_OPEN: {
-            CloseFileInViewer(&viewerStatic);
             char filename[MAX_PATH];
             if(OpenFileDlg(hwnd, filename)) {
+                CloseFileInViewer(&viewerStatic);
                 SendFileInViewer(&viewerStatic, filename);
                 ResizeViewer(&viewerStatic, hwnd);
                 InvalidateRect(hwnd, NULL, TRUE);
@@ -132,6 +134,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
         case IDM_CLOSE: {
             CloseFileInViewer(&viewerStatic);
+            // Resize в данном случае нужен для того, чтобы сбросить параметры скроллинга и другие вспомогательные переменные
             ResizeViewer(&viewerStatic, hwnd);
             InvalidateRect(hwnd, NULL, TRUE);
             break;

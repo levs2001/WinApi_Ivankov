@@ -1,3 +1,9 @@
+/*
+    Основной файл с функциями viewer.
+    Комментарии к не static функциям можно посмотреть в заголовочном файле.
+    Комментарии к static функциям можно посмотреть в объявлениях.
+*/
+
 #include<stdlib.h>
 #include<windows.h>
 #include<math.h>
@@ -40,6 +46,19 @@ static size_t CountPrLines(viewer_t* viewerP);
         hdc - дескриптор окна, в которое происходит вывод
 */
 static void PrintTextInViewer(viewer_t* viewerP, HDC hdc);
+
+/*
+    Подсчитывает сколько символов из буффера должно быть выведено в конкретной строке окна. Нужна чтобы не выводить лишнее,
+        если мы ушли горизонтальным скроллингом правее текста или собираемся вывести больше чем ширина окна.
+    params:
+        collectedPrSym - количество символов набранных от начала строки до переноса (перенос и начало не обязательно LINE_END,
+            они могут быть связаны с шириной окна, если включен режим WRAP ON)
+        hScrollPos - позиция горизонтального скроллинга
+        winWidthInSyms - ширина окна в символах (максимальное количество символов, которые могут поместиться в строку)
+    return:
+        количество символов в строке
+*/
+static size_t GetSymsCountToPrintInStr(size_t collectedPrSym, size_t hScrollPos, size_t winWidthInSyms);
 
 void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
     size_t myOldVscrollPos = viewerP->winParamsP->vScrollPos;
@@ -175,10 +194,15 @@ void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam) {
 
 void ResizeViewer(viewer_t* viewerP, HWND hwnd) {
     ResizeWinParams(viewerP->winParamsP, hwnd, viewerP->fontP);
+
+    // Масштабирование параметров скроллинга к новому размеру окна
     ResizeVscrollParams(viewerP->winParamsP, CountPrLines(viewerP));
     ResizeHscrollParams(viewerP->winParamsP, viewerP->readerP->maxStrLen, viewerP->isHorzScroll);
     SetScrollRange(hwnd, SB_VERT, 0, viewerP->winParamsP->vScrollMax < SCROLL_RANGE_MAX ? viewerP->winParamsP->vScrollMax : SCROLL_RANGE_MAX, FALSE);
     SetScrollRange(hwnd, SB_HORZ, 0, viewerP->winParamsP->hScrollMax < SCROLL_RANGE_MAX ? viewerP->winParamsP->hScrollMax : SCROLL_RANGE_MAX, FALSE);
+    SetScrollPos(hwnd, SB_VERT, GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos), TRUE);
+    SetScrollPos(hwnd, SB_HORZ, GetScrollPosSystemFromMy(viewerP->winParamsP->hScrollMax, viewerP->winParamsP->hScrollPos), TRUE);
+
     SetPrintedBuffIndexes(viewerP);
 }
 

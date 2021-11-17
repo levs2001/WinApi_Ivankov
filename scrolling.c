@@ -1,3 +1,9 @@
+/*
+    Файл с функциями, отвечающими за скроллинг.
+    Комментарии к не static функциям можно посмотреть в заголовочном файле.
+    Комментарии к static функциям можно посмотреть в объявлениях.
+*/
+
 #include"win_comps.h"
 #include"scrolling.h"
 
@@ -10,6 +16,7 @@ void ResizeVscrollParams(winParams_t* winParamsP, size_t prLinesCount) {
         winParamsP->vScrollPos = winParamsP->vScrollPos * ((double)winParamsP->vScrollMax / (oldVertMax > 0 ? oldVertMax : 1));
     } else {
         winParamsP->vScrollMax = 0;
+        winParamsP->vScrollPos = 0;
     }
 }
 
@@ -21,6 +28,7 @@ void ResizeHscrollParams(winParams_t* winParamsP, size_t maxStrLen, bool isHorzS
         winParamsP->hScrollPos = winParamsP->hScrollPos * ((double)winParamsP->hScrollMax / (oldHorzMax > 0 ? oldHorzMax : 1));
     } else {
         winParamsP->hScrollMax = 0;
+        winParamsP->hScrollPos = 0;
     }
 }
 
@@ -30,8 +38,7 @@ void ChangeVScrollPos(winParams_t* winParamsP, long delta) {
             winParamsP->vScrollPos = winParamsP->vScrollMax;
             return;
         }
-    }
-    else {
+    } else {
         if((long)winParamsP->vScrollPos + delta < 0) {
             winParamsP->vScrollPos = 0;
             return;

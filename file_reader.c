@@ -1,3 +1,9 @@
+/*
+    Файл с функциями отвечающими зза работу с файлом, получении метаинформации о нем.
+    Комментарии к не static функциям можно посмотреть в заголовочном файле.
+    Комментарии к static функциям можно посмотреть в объявлениях.
+*/
+
 #include "file_reader.h"
 #include "exceptions.h"
 #include "memory.h"
@@ -151,7 +157,7 @@ static void InitLnEnds(reader_t* readerP) {
     size_t* lnEnds = (size_t*)getMem(sizeof(size_t) * lnEndsGivenSize, "lnEnds");
 
     for(size_t i = 0; i < readerP->bufferSize; i++) {
-        if(readerP->buffer[i] == '\n') {
+        if(readerP->buffer[i] == LINE_END) {
             if(lnEndsSize >= lnEndsGivenSize - 1) {
                 lnEndsGivenSize += REALLOC_NUM;
                 lnEnds = ExpandLnEnds(lnEnds, lnEndsGivenSize*sizeof(size_t));
