@@ -39,7 +39,7 @@ static void SetPrintedBuffIndexes(viewer_t* viewerP);
 */
 static size_t CountPrLines(viewer_t* viewerP);
 
-/*
+/**
     ¬ыводит текст файла, который до этого открыли и записали во viewer, в окно
     params:
         viewerP - указатель на viewer

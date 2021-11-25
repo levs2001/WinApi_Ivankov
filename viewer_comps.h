@@ -16,7 +16,8 @@ typedef struct {
     winParams_t* winParamsP;
     // Показывает включен ли горизнтальный скроллинг (Wrap off)
     bool isHorzScroll;
-    // Counting during resize and vScrolling, need to know what part of buffer should be printed
+    /// Counting during resize and vScrolling, need to know what part of buffer should be printed
+    //Смещение ...
     size_t firstPrSymI;
     size_t lastPrSymI;
 }viewer_t;
