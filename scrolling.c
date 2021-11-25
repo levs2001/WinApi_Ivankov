@@ -6,14 +6,34 @@
 
 #include"win_comps.h"
 #include"scrolling.h"
+#include"viewer_comps.h"
 
+// TODO (levs2#1#): Написать комментарий для этой функции
+static size_t GetNewVScrollPos(viewer_t* viewerP) {
+    winParams_t* winParamsP = viewerP->winParamsP;
+    reader_t* readerP = viewerP->readerP;
+    size_t vScrollPos = 0;
+    //Количество символов набранных до перехода строки
+    size_t collectedSymsN = 0;
 
-void ResizeVscrollParams(winParams_t* winParamsP, size_t prLinesCount) {
-    size_t oldVertMax = winParamsP->vScrollMax;
+    for(size_t i = 0; i <= viewerP->firstPrSymI; i++) {
+        if(readerP->buffer[i] == LINE_END
+                || (collectedSymsN >= winParamsP->widthInSyms && !viewerP->isHorzScroll)) {
+            collectedSymsN = 0;
+            vScrollPos++;
+        }
+        collectedSymsN++;
+    }
+
+    return vScrollPos;
+}
+
+void ResizeVscrollParams(viewer_t* viewerP, size_t prLinesCount) {
+    winParams_t* winParamsP = viewerP->winParamsP;
 
     if((long)(prLinesCount - winParamsP->heightInSyms) >= 0) {
         winParamsP->vScrollMax = prLinesCount - winParamsP->heightInSyms;
-        winParamsP->vScrollPos = winParamsP->vScrollPos * ((double)winParamsP->vScrollMax / (oldVertMax > 0 ? oldVertMax : 1));
+        winParamsP->vScrollPos = GetNewVScrollPos(viewerP);
     } else {
         winParamsP->vScrollMax = 0;
         winParamsP->vScrollPos = 0;
@@ -21,11 +41,8 @@ void ResizeVscrollParams(winParams_t* winParamsP, size_t prLinesCount) {
 }
 
 void ResizeHscrollParams(winParams_t* winParamsP, size_t maxStrLen, bool isHorzScroll) {
-    size_t oldHorzMax = winParamsP->hScrollMax;
-
     if(isHorzScroll && maxStrLen > winParamsP->widthInSyms) {
         winParamsP->hScrollMax = maxStrLen - winParamsP->widthInSyms;
-        winParamsP->hScrollPos = winParamsP->hScrollPos * ((double)winParamsP->hScrollMax / (oldHorzMax > 0 ? oldHorzMax : 1));
     } else {
         winParamsP->hScrollMax = 0;
         winParamsP->hScrollPos = 0;

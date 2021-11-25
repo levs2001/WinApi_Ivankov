@@ -1,6 +1,7 @@
 #ifndef HEADER_SCROLLING
 #define HEADER_SCROLLING
 
+#include"viewer_comps.h"
 #include"win_comps.h"
 #include<stdbool.h>
 
@@ -9,6 +10,7 @@
 // Максимальный диапазон системного скроллига
 #define SCROLL_RANGE_MAX 65535
 
+// TODO (levs2#1#): Переделать этот коммент
 /*
     Меняет параметры вертикального скроллинга vScrollMax и vScrollPos,
     под новый размер окна
@@ -16,7 +18,7 @@
         winParamsP - указатель на мою структуру с параметрами окна
         prLinesCount - количество строк, которое можно увидеть в viewer
 */
-void ResizeVscrollParams(winParams_t* winParamsP, size_t prLinesCount);
+void ResizeVscrollParams(viewer_t* viewerP, size_t prLinesCount);
 
 /*
     Меняет параметры горизонтального скроллинга hScrollMax и hScrollPos,

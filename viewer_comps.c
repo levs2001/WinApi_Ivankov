@@ -196,13 +196,12 @@ void ResizeViewer(viewer_t* viewerP, HWND hwnd) {
     ResizeWinParams(viewerP->winParamsP, hwnd, viewerP->fontP);
 
     // Масштабирование параметров скроллинга к новому размеру окна
-    ResizeVscrollParams(viewerP->winParamsP, CountPrLines(viewerP));
+    ResizeVscrollParams(viewerP, CountPrLines(viewerP));
     ResizeHscrollParams(viewerP->winParamsP, viewerP->readerP->maxStrLen, viewerP->isHorzScroll);
     SetScrollRange(hwnd, SB_VERT, 0, viewerP->winParamsP->vScrollMax < SCROLL_RANGE_MAX ? viewerP->winParamsP->vScrollMax : SCROLL_RANGE_MAX, FALSE);
     SetScrollRange(hwnd, SB_HORZ, 0, viewerP->winParamsP->hScrollMax < SCROLL_RANGE_MAX ? viewerP->winParamsP->hScrollMax : SCROLL_RANGE_MAX, FALSE);
     SetScrollPos(hwnd, SB_VERT, GetScrollPosSystemFromMy(viewerP->winParamsP->vScrollMax, viewerP->winParamsP->vScrollPos), TRUE);
     SetScrollPos(hwnd, SB_HORZ, GetScrollPosSystemFromMy(viewerP->winParamsP->hScrollMax, viewerP->winParamsP->hScrollPos), TRUE);
-
     SetPrintedBuffIndexes(viewerP);
 }
 
@@ -240,13 +239,11 @@ void ShowViewer(viewer_t* viewerP, HDC hdc) {
 
 void WrapOnViewer(viewer_t* viewerP) {
     viewerP->isHorzScroll = false;
-    viewerP->winParamsP->vScrollPos = 0;
     viewerP->winParamsP->hScrollPos = 0;
 }
 
 void WrapOffViewer(viewer_t* viewerP) {
     viewerP->isHorzScroll = true;
-    viewerP->winParamsP->vScrollPos = 0;
     viewerP->winParamsP->hScrollPos = 0;
 }
 
