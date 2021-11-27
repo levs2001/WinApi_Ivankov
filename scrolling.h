@@ -10,13 +10,12 @@
 // Максимальный диапазон системного скроллига
 #define SCROLL_RANGE_MAX 65535
 
-// TODO (levs2#1#): Переделать этот коммент
 /*
     Меняет параметры вертикального скроллинга vScrollMax и vScrollPos,
-    под новый размер окна
+    под новый размер окна.
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        prLinesCount - количество строк, которое можно увидеть в viewer
+        [in|out] viewerP - указатель на структуру вьювера
+        [in] prLinesCount - количество строк, которое можно увидеть в viewer
 */
 void ResizeVscrollParams(viewer_t* viewerP, size_t prLinesCount);
 
@@ -24,8 +23,8 @@ void ResizeVscrollParams(viewer_t* viewerP, size_t prLinesCount);
     Меняет параметры горизонтального скроллинга hScrollMax и hScrollPos,
     под новый размер окна (при условии, что горизонтальный скроллинг включен)
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
+        [in] isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
 */
 void ResizeHscrollParams(winParams_t* winParamsP, size_t maxStrLen, bool isHorzScroll);
 
@@ -33,7 +32,7 @@ void ResizeHscrollParams(winParams_t* winParamsP, size_t maxStrLen, bool isHorzS
     Меняет позицию вертикального скроллинга (она сдвигается на 1 строку текста вверх),
     нужна для случая, когда пользователь нажал стрелку вверх на клавиатуре или скролл баре
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
 */
 void ScrollVertLineUpViewer(winParams_t* winParamsP);
 
@@ -41,7 +40,7 @@ void ScrollVertLineUpViewer(winParams_t* winParamsP);
     Меняет позицию вертикального скроллинга (она сдвигается на 1 строку текста вниз),
     нужна для случая, когда пользователь нажал стрелку вниз на клавиатуре или скролл баре
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
 */
 void ScrollVertLineDownViewer(winParams_t* winParamsP);
 
@@ -49,7 +48,7 @@ void ScrollVertLineDownViewer(winParams_t* winParamsP);
     Меняет позицию вертикального скроллинга (она сдвигается вверх на колиичество строк текста, размещенных в окне),
     нужна для случая, когда пользователь нажал на скролл бар выше ползунка или pageUp на клавиатуре
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
 */
 void ScrollVertPageUpViewer(winParams_t* winParamsP);
 
@@ -57,7 +56,7 @@ void ScrollVertPageUpViewer(winParams_t* winParamsP);
     Меняет позицию вертикального скроллинга (она сдвигается вниз на колиичество строк текста, размещенных в окне),
     нужна для случая, когда пользователь нажал на скролл бар ниже ползунка или pageDown на клавиатуре
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
 */
 void ScrollVertPageDownViewer(winParams_t* winParamsP);
 
@@ -66,8 +65,8 @@ void ScrollVertPageDownViewer(winParams_t* winParamsP);
     нужна для случая, когда пользователь нажал стрелку влево на клавиатуре или скролл баре.
     Работает при условии, что включен горизонтальный скроллинг
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
+        [in] isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
 */
 void ScrollHorzLineUpViewer(winParams_t* winParamsP, bool isHorzScroll);
 
@@ -76,8 +75,8 @@ void ScrollHorzLineUpViewer(winParams_t* winParamsP, bool isHorzScroll);
     нужна для случая, когда пользователь нажал стрелку вправо на клавиатуре или скролл баре.
     Работает при условии, что включен горизонтальный скроллинг
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
+        [in] isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
 */
 void ScrollHorzLineDownViewer(winParams_t* winParamsP, bool isHorzScroll);
 
@@ -86,8 +85,8 @@ void ScrollHorzLineDownViewer(winParams_t* winParamsP, bool isHorzScroll);
     нужна для случая, когда пользователь нажал слева от ползунка на скролл баре.
     Работает при условии, что включен горизонтальный скроллинг
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
+        [in] isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
 */
 void ScrollHorzPageUpViewer(winParams_t* winParamsP, bool isHorzScroll);
 
@@ -96,16 +95,16 @@ void ScrollHorzPageUpViewer(winParams_t* winParamsP, bool isHorzScroll);
     нужна для случая, когда пользователь нажал справа от ползунка на скролл баре.
     Работает при условии, что включен горизонтальный скроллинг
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
+        [in] isHorzScroll - bool включен ли горизонтальный скроллинг (Wrap off)
 */
 void ScrollHorzPageDownViewer(winParams_t* winParamsP, bool isHorzScroll);
 
 /*
     Отображает системную позицию скроллинга на мою (они могут быть не равны из за ограничения диапазона на системном скроллинге)
     params:
-        myScrollMax - максимально возможная позиция скроллинга
-        sysScrPos - системная позиция скроллинга
+        [in] myScrollMax - максимально возможная позиция скроллинга
+        [in] sysScrPos - системная позиция скроллинга
     return:
         моя позиция скроллинга
 */
@@ -114,8 +113,8 @@ size_t GetScrollPosMyFromSystem(size_t myScrollMax, int sysScrPos);
 /*
     Отображает мою позицию скроллинга на системную (они могут быть не равны из за ограничения диапазона на системном скроллинге)
     params:
-        myScrollMax - максимально возможная позиция скроллинга
-        myScrPos - моя позиция скроллинга
+        [in] myScrollMax - максимально возможная позиция скроллинга
+        [in] myScrPos - моя позиция скроллинга
     return:
         системная позиция скроллинга
 */
@@ -124,8 +123,8 @@ int GetScrollPosSystemFromMy(size_t myScrollMax, size_t myScrPos);
 /*
     Меняет значение параметра отвечающего за вертикальный скроллинг, если это возможно
     params:
-        winParamsP - указатель на мою структуру с параметрами окна
-        delta - величина на которую надо поменять позицию вертикального скроллинга
+        [in|out] winParamsP - указатель на мою структуру с параметрами окна
+        [in] delta - величина на которую надо поменять позицию вертикального скроллинга
 */
 void ChangeVScrollPos(winParams_t* winParamsP, long delta);
 #endif

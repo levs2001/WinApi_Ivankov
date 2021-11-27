@@ -26,14 +26,14 @@ typedef enum {
 /*
     Записывает информацию об исключении в лог
     params:
-        exceptionType - вид исключения
+        [in] exceptionType - вид исключения
 */
 void Exception(eException exceptionType);
 
 /*
     Записывает сообщение в лог (консоль)
     params:
-        msg - указатель на строку с сообщением
+        [in] msg - указатель на строку с сообщением
 */
 void logMsg(char* msg);
 

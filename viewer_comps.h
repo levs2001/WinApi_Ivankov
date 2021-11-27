@@ -17,7 +17,7 @@ typedef struct {
     // Показывает включен ли горизнтальный скроллинг (Wrap off)
     bool isHorzScroll;
     /// Counting during resize and vScrolling, need to know what part of buffer should be printed
-    //Смещение ...
+    //Смещение первого и последнего выводимого индекса относительно начала буффера
     size_t firstPrSymI;
     size_t lastPrSymI;
 }viewer_t;
@@ -28,8 +28,8 @@ typedef struct {
         Инициализует всё содержимое
         (в том числе записывает во viewer дескриптор окна)
     params:
-        viewerP - указатель на viewer
-        hwnd - указатель на окно, где мы отображаем viewer
+        [out] viewerP - указатель на viewer
+        [in] hwnd - указатель на окно, где мы отображаем viewer
 */
 void InitViewer(viewer_t* viewerP, HWND hwnd);
 
@@ -37,49 +37,49 @@ void InitViewer(viewer_t* viewerP, HWND hwnd);
     Освобождает всю память выделенную под viewer
     Вызывается перед закрытием окна
     params:
-        viewerP - указатель на viewer
+        [out] viewerP - указатель на viewer
 */
 void ClearViewer(viewer_t* viewerP);
 
 /*
     Открывает файл и записывает его параметры во viewer
     params:
-        viewerP - указатель на viewer
-        filename - имя файла
+        [out] viewerP - указатель на viewer
+        [in] filename - имя файла
 */
 void SendFileInViewer(viewer_t* viewerP, char* filename);
 
 /*
     Отрисовывает viewer в окно
     params:
-        viewerP - указатель на viewer
-        hdc - дескриптор окна для отрисовки
+        [in] viewerP - указатель на viewer
+        [in] hdc - дескриптор окна для отрисовки
 */
 void ShowViewer(viewer_t* viewerP, HDC hdc);
 
 /*
     Меняет все параметры viewer с учетом нового размера окна
     params:
-        viewerP - указатель на viewer
-        hwnd - указатель на окно, где мы отображаем viewer
+        [out] viewerP - указатель на viewer
+        [in] hwnd - указатель на окно, где мы отображаем viewer
 */
 void ResizeViewer(viewer_t* viewerP, HWND hwnd);
 
 /*
     Обрабатывает кручение колесика мыши пользователем
     params:
-        viewerP - указатель на viewer
-        hwnd - указатель на окно, где мы отображаем viewer
-        wParam - параметр использумый для определения на сколько крутанули колесико
+        [in|out] viewerP - указатель на viewer
+        [in] hwnd - указатель на окно, где мы отображаем viewer
+        [in] wParam - параметр использумый для определения на сколько крутанули колесико
 */
 void ProcessMouseWheel(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
 
 /*
     Обрабатывает вертикальный скроллинг
     params:
-        viewerP - указатель на viewer
-        hwnd - указатель на окно, где мы отображаем viewer
-        wParam - параметр использумый для определения:
+        [in|out] viewerP - указатель на viewer
+        [in] hwnd - указатель на окно, где мы отображаем viewer
+        [in] wParam - параметр использумый для определения:
             команды скроллинга(нажата стрелочка, подвинут ползунок и тд)
             текущей позиции на scrollBar
 */
@@ -88,9 +88,9 @@ void ProcessVscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
 /*
     Обрабатывает горизонтальный скроллинг
     params:
-        viewerP - указатель на viewer
-        hwnd - указатель на окно, где мы отображаем viewer
-        wParam - параметр использумый для определения:
+        [in|out] viewerP - указатель на viewer
+        [in] hwnd - указатель на окно, где мы отображаем viewer
+        [in] wParam - параметр использумый для определения:
             команды скроллинга(нажата стрелочка, подвинут ползунок и тд)
             текущей позиции на scrollBar
 */
@@ -99,9 +99,9 @@ void ProcessHscrollViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
 /*
     Обрабатывает нажатие клавиш на клавиатуре. Клавиши используются для скроллинга
     params:
-        viewerP - указатель на viewer
-        hwnd - указатель на окно, где мы отображаем viewer
-        wParam - параметр использумый для определения виртуальной клавиши
+        [in|out] viewerP - указатель на viewer
+        [in] hwnd - указатель на окно, где мы отображаем viewer
+        [in] wParam - параметр использумый для определения виртуальной клавиши
 */
 void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
 
@@ -109,14 +109,14 @@ void ProcessKeyDownViewer(viewer_t* viewerP, HWND hwnd, WPARAM wParam);
     Включает перенос строк во viewer(если выходит за пределы окна)
     и отключает горизонтальный скроллинг
     params:
-        viewerP - указатель на viewer
+        [out] viewerP - указатель на viewer
 */
 void WrapOnViewer(viewer_t* viewerP);
 
 /*
     Отключает перенос строк во viewer и включает горизонтальный скроллинг
     params:
-        viewerP - указатель на viewer
+        [out] viewerP - указатель на viewer
 */
 void WrapOffViewer(viewer_t* viewerP);
 
@@ -125,7 +125,7 @@ void WrapOffViewer(viewer_t* viewerP);
     (в том числе и освобождает память),
     Нуллифицирует параметры, завязанные на этой информации
     params:
-        viewerP - указатель на viewer
+        [out] viewerP - указатель на viewer
 */
 void CloseFileInViewer(viewer_t* viewerP);
 #endif

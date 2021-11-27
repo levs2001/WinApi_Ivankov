@@ -8,7 +8,14 @@
 #include"scrolling.h"
 #include"viewer_comps.h"
 
-// TODO (levs2#1#): Написать комментарий для этой функции
+/*
+    Высчитывает позицию вертикального скроллинга, то есть номер строки в которой расположено смещение первого
+    выводимого символа относительно начала
+    буффера.
+    params:
+        [in] viewerP - указатель на структуру вьювера
+        [in] prLinesCount - количество строк, которое можно увидеть в viewer
+*/
 static size_t GetNewVScrollPos(viewer_t* viewerP) {
     winParams_t* winParamsP = viewerP->winParamsP;
     reader_t* readerP = viewerP->readerP;

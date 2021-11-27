@@ -12,8 +12,8 @@
     Отображает размеры окна на размеры окна в символах (сколько можно записать по вертикали и горизонтали),
     перезаписывает эти параметры.
         params:
-            winParamsP - указатель на структуру с параметрами окна
-            myFontP - указатель на параметры используемого в окне шрифта
+            [in|out] winParamsP - указатель на структуру с параметрами окна
+            [in] myFontP - указатель на параметры используемого в окне шрифта
 */
 static void CountWinSizesInSyms(winParams_t* winParamsP, myFont_t* myFontP) {
     winParamsP->widthInSyms = (winParamsP->width) / myFontP->width;

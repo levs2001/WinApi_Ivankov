@@ -1,5 +1,3 @@
-// TODO (levs2#1#): Дописать комменты, как сказали в лекции
-
 #if defined(UNICODE) && !defined(_UNICODE)
 #define _UNICODE
 #elif defined(_UNICODE) && !defined(UNICODE)
